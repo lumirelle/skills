@@ -25,14 +25,14 @@ For OSS projects **without existing skills**. We clone the repo as a submodule a
 
 For projects that **already maintain their own skills**. We clone their repo as a submodule and sync specified skills to ours.
 
-- **Projects:** Slidev, VueUse
+- **Projects:** mattapocock/skills, ...
 - **Workflow:** Pull updates → Copy specified skills (with optional renaming)
 - **Source:** `vendor/{project}/skills/{skill-name}/`
 - **Config:** Each vendor specifies which skills to sync and their output names in `meta.ts`
 
 ### Type 3: Hand-written Skills
 
-For skills that are written by Anthony Fu with his preferences, experience, tastes and best practices.
+For skills that are written by Lumirelle with his preferences, experience, tastes and best practices.
 
 You don't need to do anything about them unless being asked.
 
@@ -145,9 +145,9 @@ Also record the version of the tool/project when the skills were generated.
 name: {name}
 description: {description}
 metadata:
-  author: Anthony Fu
+  author: Lumirelle
   version: "2026.1.1"
-  source: Generated from {source-url}, scripts located at https://github.com/antfu/skills
+  source: Generated from {source-url}, scripts located at https://github.com/lumirelle/skills
 ---
 
 > The skill is based on {project} v{version}, generated at {date}.

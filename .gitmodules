@@ -7,3 +7,6 @@
 [submodule "vendor/find-skills"]
 	path = vendor/find-skills
 	url = https://github.com/vercel-labs/skills
+[submodule "vendor/anthropics"]
+	path = vendor/anthropics
+	url = https://github.com/anthropics/skills

@@ -18,43 +18,71 @@ export const vendors: Record<string, VendorSkillMeta> = {
   'find-skills': {
     source: 'https://github.com/vercel-labs/skills',
     skills: {
+      // Agent
       'find-skills': 'find-skills',
+    },
+  },
+  'anthropics': {
+    source: 'https://github.com/anthropics/skills',
+    skills: {
+      // Agent
+      'mcp-builder': 'mcp-builder',
+      'skill-creator': 'skill-creator',
+      // Document
+      'docx': 'docx',
+      'pptx': 'pptx',
+      'xlsx': 'xlsx',
+      'pdf': 'pdf',
+      'doc-coauthoring': 'doc-coauthoring',
+      'internal-comms': 'internal-comms',
+      // Design
+      'theme-factory': 'theme-factory',
+      'canvas-design': 'canvas-design',
+      'frontend-design': 'frontend-design',
+      // Development
+      'webapp-testing': 'webapp-testing',
     },
   },
   'mattapocock': {
     source: 'https://github.com/mattpocock/skills',
     skills: {
+      // Starup
       'engineering/ask-matt': 'ask-matt',
-      'engineering/code-review': 'code-review',
-      'engineering/codebase-design': 'codebase-design',
-      'engineering/diagnosing-bugs': 'diagnosing-bugs',
-      'engineering/domain-modeling': 'domain-modeling',
-      'engineering/grill-with-docs': 'grill-with-docs',
-      'engineering/implement': 'implement',
-      'engineering/improve-codebase-architecture': 'improve-codebase-architecture',
-      'engineering/prototype': 'prototype',
-      'engineering/research': 'research',
-      'engineering/resolving-merge-conflicts': 'resolving-merge-conflicts',
       'engineering/setup-matt-pocock-skills': 'setup-matt-pocock-skills',
-      'engineering/tdd': 'tdd',
+      // Agent
+      'productivity/writing-for-agents': 'writing-for-agents',
+      'productivity/handoff': 'handoff',
+      // Document
+      'engineering/research': 'research',
+      'engineering/domain-modeling': 'domain-modeling',
+      'productivity/grilling': 'grilling',
+      'productivity/grill-me': 'grill-me',
+      'engineering/grill-with-docs': 'grill-with-docs',
+      'engineering/wayfinder': 'wayfinder',
+      'productivity/to-questionnaire': 'to-questionnaire',
+      'productivity/wait-what': 'wait-what',
+      'productivity/teach': 'teach',
       'engineering/to-spec': 'to-spec',
       'engineering/to-tickets': 'to-tickets',
       'engineering/triage': 'triage',
-      'engineering/wayfinder': 'wayfinder',
+      // Design
+      'engineering/codebase-design': 'codebase-design',
+      'engineering/prototype': 'prototype',
+      'engineering/improve-codebase-architecture': 'improve-codebase-architecture',
+      // Development
+      'engineering/tdd': 'tdd',
+      'engineering/implement': 'implement',
+      'engineering/code-review': 'code-review',
+      'engineering/diagnosing-bugs': 'diagnosing-bugs',
       'engineering/wizard': 'wizard',
-      'productivity/grill-me': 'grill-me',
-      'productivity/grilling': 'grilling',
-      'productivity/handoff': 'handoff',
-      'productivity/teach': 'teach',
-      'productivity/to-questionnaire': 'to-questionnaire',
-      'productivity/wait-what': 'wait-what',
-      'productivity/writing-for-agents': 'writing-for-agents',
+      'engineering/resolving-merge-conflicts': 'resolving-merge-conflicts',
       'misc/migrate-to-shoehorn': 'migrate-to-shoehorn',
     },
   },
   'web-design-guidelines': {
     source: 'https://github.com/vercel-labs/agent-skills',
     skills: {
+      // Design
       'web-design-guidelines': 'web-design-guidelines',
     },
   },

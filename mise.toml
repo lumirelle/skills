@@ -1,0 +1,43 @@
+#:schema https://mise.jdx.dev/schema/mise.json
+
+[tools]
+# Environments
+node = "latest"
+'github:nubjs/nub' = "latest"
+# Quality
+hk = "latest"
+pkl = "latest"
+
+[deps.nub]
+description = 'Automatically install Node.js dependencies via nub.'
+sources = ['package.json', 'nub.lock']
+outputs = ['node_modules/']
+run = 'nub pm pin && nub install'
+auto = true
+
+[env]
+_.path = ["{{config_root}}/node_modules/.bin"]
+
+[tasks.check]
+description = 'Run all checks.'
+usage = '''
+flag "-s --staged" help="Run on staged files only without stashing unstaged changes"
+arg "[rest]" var=#true help="Additional arguments to pass to the test runner"
+'''
+run = '''
+hk check {{ "--staged" if usage.staged else "--all" }} {{ usage.rest | join(sep=' ') if usage.rest else '' }}
+'''
+
+[tasks.fix]
+description = 'Fix all check issues.'
+usage = '''
+flag "-s --staged" help="Run on staged files only without stashing unstaged changes"
+arg "[rest]" var=#true help="Additional arguments to pass to the test runner"
+'''
+run = '''
+hk fix {{ "--staged" if usage.staged else "--all" }} {{ usage.rest | join(sep=' ') if usage.rest else '' }}
+'''
+
+[tasks.start]
+description = 'Run CLI.'
+run = 'nub scripts/cli.ts'

@@ -1,25 +1,28 @@
 {
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@10.32.1",
-  "scripts": {
-    "lint": "eslint .",
-    "start": "node scripts/cli.ts",
-    "prepare": "simple-git-hooks && git submodule update --init --recursive"
-  },
+  "packageManager": "nub@0.7.5",
   "devDependencies": {
-    "@antfu/eslint-config": "^7.7.2",
-    "@clack/prompts": "^1.1.0",
-    "@types/node": "^25.5.0",
-    "eslint": "^10.0.3",
-    "lint-staged": "^16.3.3",
-    "simple-git-hooks": "^2.13.1",
-    "typescript": "^5.9.3"
+    "@antfu/eslint-config": "^9.5.1",
+    "@clack/prompts": "^1.7.0",
+    "@lumirelle/oxlint-config": "^0.14.0",
+    "@lumirelle/tsconfig": "^0.1.6",
+    "@types/node": "^26.4.1",
+    "eslint": "^10.10.0",
+    "eslint-plugin-oxlint": "^1.81.0",
+    "oxlint": "^1.81.0",
+    "oxlint-tsgolint": "^7.0.2001",
+    "taze": "^21.1.0",
+    "typescript": "npm:typescript-native-bridge@^6.0.3-bridge.15.tsgo.7.0.2"
   },
-  "simple-git-hooks": {
-    "pre-commit": "pnpm lint-staged"
+  "overrides": {
+    "typescript": "$typescript"
   },
-  "lint-staged": {
-    "*.{js,ts,mjs,mts}": "eslint --fix"
+  "devEngines": {
+    "packageManager": {
+      "name": "nub",
+      "version": "^0.7.5",
+      "onFail": "ignore"
+    }
   }
 }

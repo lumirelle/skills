@@ -1,0 +1,70 @@
+amends "package://github.com/jdx/hk/releases/download/v1.57.0/hk@1.57.0#/Config.pkl"
+
+import "package://github.com/jdx/hk/releases/download/v1.57.0/hk@1.57.0#/Builtins.pkl"
+
+local linters = new Mapping<String, Step> {
+  // Code
+  ["oxlint"] = Builtins.ox_lint
+  ["eslint"] = (Builtins.eslint) {
+    batch = false
+    glob =
+      List(
+        // Code
+        "*.js",
+        "*.mjs",
+        "*.cjs",
+        "*.jsx",
+        "*.ts",
+        "*.mts",
+        "*.cts",
+        "*.tsx",
+        // Configurations
+        "*.json",
+        "*.jsonc",
+        "*.yaml",
+        "*.yml",
+        "*.toml",
+        // Documentations
+        "*.md",
+        "*.mdc",
+        "*.mdx",
+      )
+    check = new CommandSpec {
+      command = new Command { argv = List("eslint", "--no-warn-ignored", "{{files}}") }
+      effect = "read"
+    }
+    fix = new CommandSpec {
+      command = new Command {
+        argv = List("eslint", "--no-warn-ignored", "--fix", "{{files}}")
+      }
+      effect = "write"
+    }
+    depends = List("oxlint")
+  }
+
+  // Configurations
+  ["hk"] {
+    glob = List("hk.pkl")
+    check = new CommandSpec {
+      command = new Command { argv = List("hk", "validate") }
+      effect = "read"
+    }
+  }
+  ["pkl-format"] = Builtins.pkl_format
+}
+
+hooks {
+  ["pre-commit"] {
+    fix = true
+    stash = "git"
+    steps = linters
+  }
+  ["fix"] {
+    fix = true
+    stage = false
+    steps = linters
+  }
+  ["check"] {
+    steps = linters
+  }
+}

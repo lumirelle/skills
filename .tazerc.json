@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/antfu-collective/taze/refs/heads/main/schema.json",
+  "write": true,
+  "interactive": true,
+  "maturityPeriod": 1,
+  "githubActions": false
+}

@@ -1,10 +1,16 @@
 {
   "recommendations": [
-    "dbaeumer.vscode-eslint",
-    "antfu.pnpm-catalog-lens",
-    "antfu.iconify",
-    "antfu.unocss",
-    "antfu.slidev",
-    "vue.volar"
+    // Environment
+    "hverlin.mise-vscode",
+    "editorconfig.editorconfig",
+
+    // Language Support
+    "redhat.vscode-yaml",
+    "remcohaszing.schemastore",
+    "tamasfe.even-better-toml",
+
+    // Quality
+    "oxc.oxc-vscode",
+    "dbaeumer.vscode-eslint"
   ]
 }

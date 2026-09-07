@@ -1,17 +1,9 @@
 {
+  "extends": "@lumirelle/tsconfig/ts",
   "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["ESNext"],
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
-    "allowImportingTsExtensions": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "verbatimModuleSyntax": true,
-    "skipDefaultLibCheck": true,
-    "skipLibCheck": true
-  }
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "types": [],
+    "allowJs": true
+  },
+  "include": ["scripts/**/*", "*.config.ts", "*.config.js"]
 }

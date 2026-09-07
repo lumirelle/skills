@@ -4,3 +4,6 @@
 [submodule "vendor/mattapocock"]
 	path = vendor/mattapocock
 	url = https://github.com/mattpocock/skills.git
+[submodule "vendor/find-skills"]
+	path = vendor/find-skills
+	url = https://github.com/vercel-labs/skills

@@ -15,8 +15,14 @@ export const submodules = {
  * Already generated skills, sync with their `skills/` directory
  */
 export const vendors: Record<string, VendorSkillMeta> = {
+  'find-skills': {
+    source: 'https://github.com/vercel-labs/skills',
+    skills: {
+      'find-skills': 'find-skills',
+    },
+  },
   'mattapocock': {
-    source: 'https://github.com/mattpocock/skills.git',
+    source: 'https://github.com/mattpocock/skills',
     skills: {
       'engineering/ask-matt': 'ask-matt',
       'engineering/code-review': 'code-review',

@@ -1,5 +1,5 @@
 # Sync Info
 
 - **Source:** `vendor/anthropics/skills/canvas-design`
-- **Git SHA:** `41bbe19d1a1a7eaab5e7bb9050a417e5c6cffc8f`
-- **Synced:** 2026-09-07
+- **Git SHA:** `37736a7cb2c44f1ba321d96324b885ceb71a50df`
+- **Synced:** 2026-09-16

@@ -178,10 +178,14 @@ async function initSubmodules(skipPrompt = false) {
 async function syncSubmodules() {
   const spinner = p.spinner()
 
-  // Update all submodules
+  // Update all submodules.
+  // Use the default `--checkout`, NOT `--merge`: submodules sit in detached HEAD,
+  // so `--merge` creates a local-only merge commit whenever the pinned commit has
+  // diverged from the remote tip. That commit is referenced by no remote branch,
+  // so a fresh `git clone --recurse-submodules` fails to check it out.
   spinner.start('Updating submodules...')
   try {
-    exec('git submodule update --remote --merge')
+    exec('git submodule update --remote')
     spinner.stop('Submodules updated')
   }
   catch (e: any) {

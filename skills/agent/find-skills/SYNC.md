@@ -1,5 +1,5 @@
 # Sync Info
 
 - **Source:** `vendor/find-skills/skills/find-skills`
-- **Git SHA:** `0aa533e381494896489d44fa0805573e32055a50`
-- **Synced:** 2026-09-16
+- **Git SHA:** `18f96ea131dab3b0fcc9b27cf7c6f6cbb6174680`
+- **Synced:** 2026-10-04

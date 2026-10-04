@@ -65,6 +65,8 @@ export const vendors: Record<string, VendorSkillMeta> = {
       'engineering/to-spec': 'doc/to-spec',
       'engineering/to-tickets': 'doc/to-tickets',
       'engineering/triage': 'doc/triage',
+      'engineering/pr': 'doc/pr',
+      'engineering/retro': 'doc/retro',
       // Design
       'engineering/codebase-design': 'design/codebase-design',
       'engineering/prototype': 'design/prototype',
@@ -75,7 +77,6 @@ export const vendors: Record<string, VendorSkillMeta> = {
       'engineering/code-review': 'dev/code-review',
       'engineering/diagnosing-bugs': 'dev/diagnosing-bugs',
       'engineering/wizard': 'dev/wizard',
-      'engineering/resolving-merge-conflicts': 'dev/resolving-merge-conflicts',
       'misc/migrate-to-shoehorn': 'dev/migrate-to-shoehorn',
     },
   },

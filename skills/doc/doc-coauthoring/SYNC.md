@@ -1,5 +1,5 @@
 # Sync Info
 
 - **Source:** `vendor/anthropics/skills/doc-coauthoring`
-- **Git SHA:** `37736a7cb2c44f1ba321d96324b885ceb71a50df`
-- **Synced:** 2026-09-16
+- **Git SHA:** `8a1541c4a3ffa5a20a5a91de0dcf3f0bab1d1ef4`
+- **Synced:** 2026-10-04

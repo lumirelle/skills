@@ -71,6 +71,7 @@ export const vendors: Record<string, VendorSkillMeta> = {
       // Development
       'engineering/tdd': 'dev/tdd',
       'engineering/implement': 'dev/implement',
+      'engineering/implement-spec': 'dev/implement-spec',
       'engineering/code-review': 'dev/code-review',
       'engineering/diagnosing-bugs': 'dev/diagnosing-bugs',
       'engineering/wizard': 'dev/wizard',

@@ -82,6 +82,7 @@ Synced from external repositories that maintain their own skills. See [`meta.ts`
 | [prototype](skills/design/prototype) | Throwaway prototypes that answer a design question |
 | [tdd](skills/dev/tdd) | Red → green loop, what makes a test worth keeping, anti-patterns |
 | [implement](skills/dev/implement) | Implement work described by a spec or tickets |
+| [implement-spec](skills/dev/implement-spec) | Implement a whole spec in one run: tickets as a task graph, parallel subagents, one integration branch |
 | [code-review](skills/dev/code-review) | Two-axis review of a diff (standards and spec) via parallel sub-agents |
 | [pr](skills/doc/pr) | Shape a PR body: smallest visual, before/after evidence, merge-danger call |
 | [diagnosing-bugs](skills/dev/diagnosing-bugs) | Diagnosis loop for hard bugs and performance regressions |

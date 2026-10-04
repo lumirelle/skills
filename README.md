@@ -32,7 +32,7 @@ Manually maintained by Lumirelle with his preferred tools, setup conventions, an
 
 | Skill | Description |
 |-------|-------------|
-| / | / |
+| [mise](skills/external-tool/mise) | Onboard into a mise project: detect it, install its tools, find and run its tasks, and prefer `--help` over docs for anything else |
 
 ### Skills Generated from Official Documentation
 
@@ -106,7 +106,7 @@ Synced from external repositories that maintain their own skills. See [`meta.ts`
 
 ### What Makes This Collection Different?
 
-Skills are grouped by scope under `skills/` (`agent/`, `doc/`, `design/`, `dev/`, `starup/`), so you can install only what you need.
+Skills are grouped by scope under `skills/` (`agent/`, `doc/`, `design/`, `dev/`, `starup/`, `external-tool/`), so you can install only what you need.
 
 Sources are tracked as git submodules under `vendor/` (for repositories that maintain their own skills) and `sources/` (for repositories we generate skills from). Pinning a submodule gives reliable, reproducible context and lets the skills stay up-to-date with upstream changes, since the exact commit each skill was synced from is recorded.
 

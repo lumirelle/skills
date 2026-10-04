@@ -118,7 +118,7 @@ async function initSubmodules(skipPrompt = false) {
           removeSubmodule(submodulePath)
           spinner.stop(`Removed: ${submodulePath}`)
         }
-        catch (e) {
+        catch (e: any) {
           spinner.stop(`Failed to remove ${submodulePath}: ${e}`)
         }
       }
@@ -163,7 +163,7 @@ async function initSubmodules(skipPrompt = false) {
       exec(`git submodule add ${project.url} ${project.path}`)
       spinner.stop(`Added: ${project.name}`)
     }
-    catch (e) {
+    catch (e: any) {
       spinner.stop(`Failed to add ${project.name}: ${e}`)
     }
   }
@@ -184,7 +184,7 @@ async function syncSubmodules() {
     exec('git submodule update --remote --merge')
     spinner.stop('Submodules updated')
   }
-  catch (e) {
+  catch (e: any) {
     spinner.stop(`Failed to update submodules: ${e}`)
     return
   }
@@ -281,7 +281,7 @@ async function checkUpdates() {
     exec('git submodule foreach git fetch')
     spinner.stop('Fetched remote changes')
   }
-  catch (e) {
+  catch (e: any) {
     spinner.stop(`Failed to fetch: ${e}`)
     return
   }
@@ -411,7 +411,7 @@ async function cleanup(skipPrompt = false) {
           removeSubmodule(submodulePath)
           spinner.stop(`Removed: ${submodulePath}`)
         }
-        catch (e) {
+        catch (e: any) {
           spinner.stop(`Failed to remove ${submodulePath}: ${e}`)
         }
       }
@@ -449,7 +449,7 @@ async function cleanup(skipPrompt = false) {
           rmSync(join(root, 'skills', skillName), { recursive: true })
           spinner.stop(`Removed: skills/${skillName}`)
         }
-        catch (e) {
+        catch (e: any) {
           spinner.stop(`Failed to remove skills/${skillName}: ${e}`)
         }
       }
@@ -540,4 +540,9 @@ async function main() {
   p.outro('Done')
 }
 
-main().catch(console.error)
+try {
+  await main()
+}
+catch (e: any) {
+  console.error(e)
+}

@@ -2,7 +2,7 @@
   "extends": "@lumirelle/tsconfig/ts",
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-    "types": [],
+    "types": ["node"],
     "allowJs": true
   },
   "include": ["scripts/**/*", "*.config.ts", "*.config.js"]

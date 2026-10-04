@@ -1,19 +1,19 @@
 {
   "type": "module",
   "private": true,
-  "packageManager": "nub@0.7.5",
+  "packageManager": "nub@0.9.6",
   "devDependencies": {
     "@antfu/eslint-config": "^9.5.1",
-    "@clack/prompts": "^1.7.0",
+    "@clack/prompts": "^1.8.1",
     "@lumirelle/oxlint-config": "^0.14.0",
     "@lumirelle/tsconfig": "^0.1.6",
-    "@types/node": "^26.4.1",
-    "eslint": "^10.10.0",
-    "eslint-plugin-oxlint": "^1.81.0",
-    "oxlint": "^1.81.0",
-    "oxlint-tsgolint": "^7.0.2001",
-    "taze": "^21.1.0",
-    "typescript": "npm:typescript-native-bridge@^6.0.3-bridge.15.tsgo.7.0.2"
+    "@types/node": "^26.6.4",
+    "eslint": "^10.12.0",
+    "eslint-plugin-oxlint": "^1.86.0",
+    "oxlint": "^1.86.0",
+    "oxlint-tsgolint": "^7.0.2003",
+    "taze": "^21.3.0",
+    "typescript": "npm:typescript-native-bridge@^6.0.3-bridge.18.tsgo.7.0.2"
   },
   "overrides": {
     "typescript": "$typescript"
@@ -21,7 +21,7 @@
   "devEngines": {
     "packageManager": {
       "name": "nub",
-      "version": "^0.7.5",
+      "version": "^0.9.6",
       "onFail": "ignore"
     }
   }

@@ -1,13 +1,6 @@
 -- Project-local Neovim config. lazy.nvim auto-loads this `.lazy.lua` from the
 -- current directory (`local_spec = true`), so it applies when editing this repo.
 
--- Map *.json files to jsonc, as they are actually in jsonc syntax
-vim.filetype.add({
-	pattern = {
-		[".*%.json"] = "jsonc",
-	},
-})
-
 -- Filetypes that ESLint/oxlint should own as the formatter (code, configs, docs).
 -- Mirrors `.vscode/settings.json`: `eslint.validate`
 local eslint_support_filetypes = {

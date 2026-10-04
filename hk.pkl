@@ -1,8 +1,8 @@
-amends "package://github.com/jdx/hk/releases/download/v1.57.0/hk@1.57.0#/Config.pkl"
+amends "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl"
 
-import "package://github.com/jdx/hk/releases/download/v1.57.0/hk@1.57.0#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Builtins.pkl"
 
-local linters = new Mapping<String, Step> {
+steps {
   // Code
   ["oxlint"] = Builtins.ox_lint
   ["eslint"] = (Builtins.eslint) {
@@ -50,21 +50,11 @@ local linters = new Mapping<String, Step> {
       effect = "read"
     }
   }
-  ["pkl-format"] = Builtins.pkl_format
-}
-
-hooks {
-  ["pre-commit"] {
-    fix = true
-    stash = "git"
-    steps = linters
-  }
-  ["fix"] {
-    fix = true
-    stage = false
-    steps = linters
-  }
-  ["check"] {
-    steps = linters
+  ["pkl-format"] = (Builtins.pkl_format) {
+    shell = null
+    fix = new CommandSpec {
+      command = new Command { argv = List("pkl", "format", "--write", "{{ files }}") }
+      effect = "write"
+    }
   }
 }

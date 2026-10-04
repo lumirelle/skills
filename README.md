@@ -69,7 +69,7 @@ Synced from external repositories that maintain their own skills. See [`meta.ts`
 | [writing-for-agents](skills/agent/writing-for-agents) | Principles for writing skills and `AGENTS.md` / `CLAUDE.md` |
 | [handoff](skills/agent/handoff) | Compact the current conversation into a handoff document for the next agent |
 | [research](skills/doc/research) | Investigate a question against primary sources, captured as a Markdown file |
-| [domain-modeling](skills/doc/domain-modeling) | Sharpen the domain model: terminology, `CONTEXT.md`, ADRs |
+| [domain-modeling](skills/doc/domain-modeling) | Sharpen the domain model: terminology, `GLOSSARY.md`, ADRs |
 | [grilling](skills/doc/grilling) / [grill-me](skills/doc/grill-me) / [grill-with-docs](skills/doc/grill-with-docs) | Relentless interview to stress-test a plan, optionally emitting ADRs and a glossary |
 | [wayfinder](skills/doc/wayfinder) | Plan work too large for one session as decision tickets on the issue tracker |
 | [to-spec](skills/doc/to-spec) / [to-tickets](skills/doc/to-tickets) | Turn the conversation into a spec, then into tracer-bullet tickets with blocking edges |
@@ -83,8 +83,9 @@ Synced from external repositories that maintain their own skills. See [`meta.ts`
 | [tdd](skills/dev/tdd) | Red → green loop, what makes a test worth keeping, anti-patterns |
 | [implement](skills/dev/implement) | Implement work described by a spec or tickets |
 | [code-review](skills/dev/code-review) | Two-axis review of a diff (standards and spec) via parallel sub-agents |
+| [pr](skills/doc/pr) | Shape a PR body: smallest visual, before/after evidence, merge-danger call |
 | [diagnosing-bugs](skills/dev/diagnosing-bugs) | Diagnosis loop for hard bugs and performance regressions |
-| [resolving-merge-conflicts](skills/dev/resolving-merge-conflicts) | Resolve an in-progress merge/rebase conflict from primary sources |
+| [retro](skills/doc/retro) | Retrospective on a session: suggest changes to the agent's environment, not the code |
 | [wizard](skills/dev/wizard) | Generate an interactive bash wizard for steps only a human can do |
 | [migrate-to-shoehorn](skills/dev/migrate-to-shoehorn) | Migrate test files from `as` assertions to `@total-typescript/shoehorn` |
 

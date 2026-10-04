@@ -1,5 +1,5 @@
 # Sync Info
 
 - **Source:** `vendor/mattapocock/skills/productivity/grill-me`
-- **Git SHA:** `5d144904ad7e90db98947b85ec8e99ba7bfede8b`
+- **Git SHA:** `24fe0ef7737efae15c87225755e9f6f5965e4888`
 - **Synced:** 2026-10-04

@@ -29,18 +29,15 @@ export const vendors: Record<string, VendorSkillMeta> = {
       'mcp-builder': 'agent/mcp-builder',
       'skill-creator': 'agent/skill-creator',
       // Document
-      'docx': 'doc/docx',
-      'pptx': 'doc/pptx',
-      'xlsx': 'doc/xlsx',
-      'pdf': 'doc/pdf',
+      // NOTE: docx/pptx/xlsx/pdf are intentionally excluded. Anthropic ships them under a
+      // proprietary license that forbids copying, derivative works, and redistribution to
+      // third parties, so they cannot be published in this collection.
       'doc-coauthoring': 'doc/doc-coauthoring',
       'internal-comms': 'doc/internal-comms',
       // Design
       'theme-factory': 'design/theme-factory',
       'canvas-design': 'design/canvas-design',
       'frontend-design': 'design/frontend-design',
-      // Development
-      'webapp-testing': 'dev/webapp-testing',
     },
   },
   'mattapocock': {

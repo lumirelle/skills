@@ -54,13 +54,11 @@ Synced from external repositories that maintain their own skills. See [`meta.ts`
 |-------|-------------|
 | [mcp-builder](skills/agent/mcp-builder) | Build high-quality MCP servers that expose external APIs as tools (Python FastMCP or Node/TS SDK) |
 | [skill-creator](skills/agent/skill-creator) | Create, edit, and improve skills; run evals and optimize descriptions for triggering |
-| [docx](skills/doc/docx), [pptx](skills/doc/pptx), [xlsx](skills/doc/xlsx), [pdf](skills/doc/pdf) | Create, read, and edit Office/PDF documents, including formatting, templates, and extraction |
 | [doc-coauthoring](skills/doc/doc-coauthoring) | Structured context gathering → refinement → reader testing workflow for docs and proposals |
 | [internal-comms](skills/doc/internal-comms) | Formats for status reports, leadership updates, newsletters, and incident reports |
 | [theme-factory](skills/design/theme-factory) | Apply one of 10 preset themes (or generate a new one) to slides, docs, and HTML artifacts |
 | [canvas-design](skills/design/canvas-design) | Create posters and static visual art as .png/.pdf from a design philosophy |
 | [frontend-design](skills/design/frontend-design) | Aesthetic direction, typography, and avoiding templated-looking UI |
-| [webapp-testing](skills/dev/webapp-testing) | Playwright toolkit for driving and debugging local web apps, screenshots and logs included |
 
 #### [mattpocock/skills](https://github.com/mattpocock/skills)
 

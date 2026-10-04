@@ -125,12 +125,14 @@ You might hear people say "AGENTS.md outperforms skills". I think that's true â€
 Fork this project to create your own customized skill collection.
 
 1. Fork or clone this repository
-2. Install dependencies: `pnpm install`
+2. Install [mise](https://mise.jdx.dev/), then run `mise install` to provision Node, nub, hk, and the project's dependencies
 3. Update `meta.ts` with your own projects and skill sources
-4. Run `pnpm start cleanup` to remove existing submodules and skills
-5. Run `pnpm start init` to clone the submodules
-6. Run `pnpm start sync` to sync vendored skills
+4. Run `mise run start cleanup -y` to remove the existing submodules and skills
+5. Run `mise run start init -y` to clone the submodules
+6. Run `mise run start sync` to sync vendored skills
 7. Ask your agent to `Generate skills for \<project\>` (recommended one at a time to manage token usage)
+
+`mise run start <command>` runs the CLI in [`scripts/cli.ts`](scripts/cli.ts).
 
 See [AGENTS.md](AGENTS.md) for detailed generation guidelines.
 
@@ -146,4 +148,4 @@ See [AGENTS.md](AGENTS.md) for detailed generation guidelines.
 
 Skills and the scripts in this repository are [MIT](LICENSE.md) licensed.
 
-Vendored skills from external repositories retain their original licenses - see each skill directory for details.
+Vendored skills from external repositories retain their original licenses - see each skill directory for details. Skills released under a license that forbids redistribution are not included.

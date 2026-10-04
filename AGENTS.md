@@ -9,6 +9,16 @@ PLEASE STRICTLY FOLLOW THE BEST PRACTICES FOR SKILL: https://platform.claude.com
 - Ignore content that LLM agents already confident about in their training data.
 - Make the skill as concise as possible, avoid creating too many references.
 
+## Tooling
+
+Managed with [mise](https://mise.jdx.dev/) and [nub](https://nubjs.com/). Run commands through mise:
+
+- `mise install` — provision tools (Node, nub, hk, pkl) and project dependencies
+- `mise run start <command>` — run the skills CLI in `scripts/cli.ts` (`init`, `sync`, `check`, `cleanup`)
+- `mise run check` / `mise run fix` — lint / auto-fix via hk
+
+A pre-commit hook (`hk`) lints and fixes staged files.
+
 ## Skill Source Types
 
 There are two types of skill sources. The project lists are defined in `meta.ts`:
@@ -53,13 +63,14 @@ You don't need to do anything about them unless being asked.
 │       └── skills/
 │           └── {skill-name}/   # Individual skills to sync
 │
-└── skills/                     # Output directory (generated or synced)
-    └── {output-name}/
-        ├── SKILL.md           # Index of all skills
-        ├── GENERATION.md       # Tracking metadata (for generated skills)
-        ├── SYNC.md             # Tracking metadata (for synced skills)
-        └── references/
-            └── *.md            # Individual skill files
+└── skills/                     # Output directory
+    └── {category}/             # agent | doc | design | dev | starup | external-tool
+        └── {output-name}/
+            ├── SKILL.md        # Entry point / reference index
+            ├── GENERATION.md   # Tracking metadata (generated skills)
+            ├── SYNC.md         # Tracking metadata (synced skills)
+            └── references/
+                └── *.md        # Individual reference files
 ```
 
 **Important:** For Type 1 (generated), the `skills/{project}/` name must match `sources/{project}/`. For Type 2 (synced), the output name is configured in `meta.ts` and may differ from the source skill name.
@@ -80,7 +91,7 @@ You don't need to do anything about them unless being asked.
 
 2. **Run sync script** to clone the submodule:
    ```bash
-   nr start init -y
+   mise run start init -y
    ```
    This will clone the repository to `sources/{project}/`
 

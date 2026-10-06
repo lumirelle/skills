@@ -24,9 +24,11 @@ which point the record becomes a normal unverified entry.
 
 ## Consequences
 
-The matrix is the part of the skill that grows, which is why it is the only part
-split into a reference file. Unverified rows are a standing liability: they must
-either be verified against a real tool or removed. The unsupported-manager path is
+The matrix is the part of the skill that grows, which is why it lives in a reference of
+its own rather than in `SKILL.md`. Unverified rows are a standing liability: they must be
+verified against a real tool, removed, or — where the toolchain cannot be installed to
+check, as PHP and Elixir could not be — kept with an explicit marker and the probe-first
+rule. The unsupported-manager path is
 load-bearing — it is what keeps "we don't support this yet" from silently becoming
 either a wrong command or a veto on the whole pass. Coverage can also grow per
 project, through commands the user supplies at the generation gate, so an exotic

@@ -1,13 +1,12 @@
 ---
 name: justbump
 description: >-
-  Bump every version this project pins — toolchain tools and package
-  dependencies — in one mechanical pass, then report by manager and hand back
-  for confirmation. Use when the user says "justbump", "bump the deps",
-  "update/upgrade the dependencies", "get everything to latest", or names a
-  mode ("bump minor", "patch bump"). Modes: default, patch, minor, major.
-  Not for installing dependencies for the first time or setting up a project —
-  that's the `mise` skill.
+  Bump every version a project pins — toolchain tools and package
+  dependencies — in one pass across all its managers, then report per manager.
+  Use when the user says "justbump", asks to bump/update/upgrade the project's
+  dependencies or tool versions, or names a mode (patch, minor, major; bare
+  means default). Not for a single dependency, a first-time install, or project
+  setup — that's the `mise` skill.
 ---
 
 # justbump
@@ -58,9 +57,10 @@ If the file does not exist, generate it:
 1. **Detect** from the matrix.
 2. **Write the file.** A manager the matrix covers gets `commands`; one it does not
    gets a record with `detect` and **no `commands`**. A Node package manager gets the
-   four-mode Node lane only if `package.json` already declares taze — otherwise it
-   gets its native lane and two modes. Schema in
-   [references/schema.md](references/schema.md).
+   four-mode Node lane only if `package.json` already declares taze; otherwise it gets
+   its native lane, whose key count comes from
+   [references/managers.md](references/managers.md) — one key for `npm`, all four for
+   classic Yarn. Schema in [references/schema.md](references/schema.md).
 3. **Show the user what you detected and wait.** List the supported and unsupported
    managers separately. This is the one gate where a wrong detection is cheap to fix
    and a wrong command is not.
@@ -97,6 +97,11 @@ it mid-rollback.
 If the user asks to proceed with tracked changes anyway, keep an exact record of the
 paths the run touches and say plainly that rollback is limited to them.
 
+**Run every manager's `check`.** It is read-only, and everything downstream keys off
+its output: the report's `From`/`To` rows, the stale reference sweep, and the skip rule
+in step 3. Records with no `commands` are not run at all. Read the output rather than
+the exit code — some managers signal "updates available" with a non-zero exit.
+
 Then show the plan and wait:
 
 | Manager | Kind | Mode | Command |
@@ -111,14 +116,15 @@ degrade to `default` becomes visible *before* the run instead of in the report.
 
 ## Step 3 — bump
 
-Run each manager's recorded `bump` command for the requested mode. **What runs is
-what the file says** — there is no override layer and nothing to expand at run time.
-
 **Skip a manager whose `check` reported nothing to change.** No bump to make means no
 `refresh` either — and the Node lane's `refresh` is `rm -rf node_modules && …`, which
 would churn the tree and possibly touch the lockfile for zero version movement. Report
 that manager as `unchanged` and move on. A mode the manager cannot express is *not* a
 reason to skip it; that is `degrade`, and it still runs.
+
+Run each manager's recorded `bump` command for the requested mode. **What runs is what
+the file says** — there is no override layer and nothing to expand at run time.
+
 Then run `refresh` where the record has one. Its job is that **the verification in
 step 5 exercises the bumped versions**: a `bump` that only edits the manifest leaves
 the lockfile and `node_modules` on the old versions, and a check run against those
@@ -271,9 +277,10 @@ rather than presenting the rollback as complete.
   installed tools.
 - **Never detect a manager from the machine.** Only from a signal in the repo.
 - **Never use taze to look before you leap.** Its project config can turn every
-  invocation into a write, so inspect with the manager's native `check` and call
-  taze only where a write is intended. See
-  [references/managers.md](references/managers.md).
+  invocation into a write, so inspect with the manager's native `check`. The one
+  exception is a Node manager that has no native check — yarn berry — where the check
+  is `<runner> taze --json --no-write`; the flag is the only thing making it read-only,
+  so never drop it. See [references/managers.md](references/managers.md).
 - **Never install justbump's own tooling into the project.** A Node package manager
   uses taze only when `package.json` already declares it, and runs the **declared**
   binary (`nub exec taze`) rather than fetching one — the fetching forms ignore the

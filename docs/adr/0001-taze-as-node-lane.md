@@ -1,16 +1,19 @@
 # taze is the Node lane
 
 justbump drives `taze` for Node package managers instead of each manager's native
-update command, because taze is the only tool that expresses all four bump modes
-(`default` / `patch` / `minor` / `major`) — `nub update` and `pnpm update` are
-two-lane, so `justbump patch` would be unanswerable on the most common kind of
-project. The Node lane is available **only when the project already declares taze** in
+update command, because taze is the only way to express all four bump modes
+(`default` / `patch` / `minor` / `major`) for the Node managers in the matrix:
+`nub update` and `pnpm update` are two-lane, so `justbump patch` would be unanswerable
+on the most common kind of project. The exception is classic Yarn, whose
+`yarn upgrade --latest` with `--tilde` / `--caret` reaches all four natively; and other
+ecosystems are not affected — bundler has `--patch` / `--minor` / `--major` of its own.
+The Node lane is available **only when the project already declares taze** in
 `dependencies` or `devDependencies`, and it runs that declared binary through the
 manager's exec runner (`nub exec taze`, `pnpm exec taze`, `npx taze`). The runner is
 resolved at **generation** time and the resulting commands are written out in full in
 `.justbump/managers.json`, one per mode — so what will run is what the reviewed file
-says. A project without taze declares nothing and gets the native lane, with the mode
-degradation reported rather than hidden.
+says. A project that does not declare taze gets the native lane, and its mode
+degradation is reported rather than hidden.
 
 ## Considered options
 

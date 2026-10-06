@@ -59,7 +59,7 @@ If the file does not exist, generate it:
 2. **Write the file.** A manager the matrix covers gets `commands`; one it does not
    gets a record with `detect` and **no `commands`**. A Node package manager gets the
    four-mode Node lane only if `package.json` already declares taze — otherwise it
-   gets its native lane and two modes. Schema in the reference.
+   gets its native lane and two modes. Schema in [schema.md](references/schema.md).
 3. **Show the user what you detected and wait.** List the supported and unsupported
    managers separately. This is the one gate where a wrong detection is cheap to fix
    and a wrong command is not.

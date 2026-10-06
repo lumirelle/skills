@@ -159,8 +159,8 @@ reported as changing, search the repo for its **old** version:
   illustration, as a live pin.
 
 **The main flow will not catch this**, which is why it is a rule rather than something
-the user will notice: a stale schema URL still resolves, so `hk validate` passes while
-the config quietly validates against the previous release. See
+the user will notice: a stale schema URL still resolves, so validation passes while the
+config quietly points at the previous release. See
 [references/managers.md](references/managers.md#stale-references) for where
 hard-coded versions typically live.
 

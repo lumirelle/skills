@@ -53,7 +53,7 @@ the degradation. Nothing else in the file encodes it.
 
 | Field | Meaning |
 |---|---|
-| `version` | Schema version. Currently `2`. **A mismatch with what the skill expects means regenerate**, not migrate — the `bump` map's meaning changed at `1` → `2`, when it stopped being a fallback under a separate `engine` field and became the commands that actually run. |
+| `version` | Schema version. Currently `2`. **A mismatch with what the skill expects means regenerate, not migrate** — an older file's `bump` map means something different from what this schema describes. |
 | `verify` | Reminder text shown to the user after the run. **The agent never runs it** — the user runs the main flow. Step 6 may reproduce a failure, but that is diagnosis of a break, not this verification. |
 | `managers` | Ordered array; a `name` appears at most once. Order is the order the report and the commits use. |
 | `kind` | `toolchain` or `package`. |

@@ -76,12 +76,10 @@ and ask, never a guess.
 
 ### Unverified commands
 
-Only two rows still carry an unverified claim: `composer` and `mix`, because `php` and
-`elixir` cannot be installed in the authoring environment.
-
-**Probe an unverified command with `<command> --help` before its first mutating use.**
-If `--help` disagrees, believe `--help` and report the correction; if it cannot answer,
-stop and ask.
+Two rows carry an unverified claim: `composer` and `mix`. They are documentation-derived
+rather than probed, so **try them with `<command> --help` before their first mutating
+use.** If `--help` disagrees, believe `--help` and report the correction; if it cannot
+answer, stop and ask.
 
 ## The Node lane: taze
 
@@ -171,11 +169,11 @@ run-time judgment call.
 - **Never use taze as a check or a preview.** taze reads a project config
   (`.tazerc.json`, or a `taze` key in `package.json`), and `"write": true` there
   makes *every* invocation mutating — including `--json`, which reads like a
-  preview. Verified: the repo this skill was written in has `"write": true` in
-  `.tazerc.json`, and `taze --json` without `-w` rewrote `package.json`. Inspect with
-  the manager's own `check` command instead (those are verified read-only), and call
-  taze only at the point in step 3 where a write is intended. `--no-write` does
-  override the config if you ever genuinely need a read-only taze run.
+  preview: with `"write": true` in the config, `taze --json` without `-w` rewrites
+  `package.json`. Inspect with the manager's own `check` command instead (those are
+  verified read-only), and call taze only at the point in step 3 where a write is
+  intended. `--no-write` overrides the config if you ever genuinely need a read-only
+  taze run.
 - Pass `--no-interactive`. A project config may set `"interactive": true`, which
   would otherwise hang an agent shell waiting for input. The plan was confirmed in
   step 2, so nothing here should prompt.
@@ -191,17 +189,16 @@ run-time judgment call.
 
 ### `check` commands are read-only
 
-Every `commands.check` is inspection only and must never mutate. Verified by
-running them against a clean tree: `mise outdated --json` and `nub outdated --json`
-both exit without touching a tracked file. Do not substitute taze for a `check`
-command — see the taze traps above.
+Every `commands.check` is inspection only and must never mutate. The known ones are
+verified read-only: `mise outdated --json` and `nub outdated --json` exit without
+touching a tracked file. Do not substitute taze for a `check` command — see the taze
+traps above.
 
 **Read the output, not the exit code.** Check commands disagree about what "outdated
-found" means to a shell: verified in the repo this skill was written in,
-`nub outdated --json` exits **1** when updates exist while `mise outdated --json`
-exits **0**. Classic `yarn outdated` also exits **1** with updates pending. A non-zero
-`check` is not a step-3 failure to fix — parse the output, and treat an empty result as
-nothing to bump.
+found" means to a shell: `nub outdated --json` exits **1** when updates exist while
+`mise outdated --json` exits **0**, and classic `yarn outdated` exits **1** as well. A
+non-zero `check` is not a step-3 failure to fix — parse the output, and treat an empty
+result as nothing to bump.
 
 **One exception to "always use the manager's own check".** Where a Node manager has no
 native check — yarn berry, verified above — the check is
@@ -263,16 +260,12 @@ a candidate: report it, never edit it.
 `/`, `.`, space, quote, or end of line — on both sides. Otherwise a tool whose name is a
 prefix of another's gets confirmed on the other's line: `go` matches `golangci-lint`,
 `hk` matches `hkx`, `uv` matches `uvicorn`, `nub` matches `nubx`. That last one is not
-hypothetical — `nubx` is nub's own alias. Found by running the rule against a fixture
-holding `toolab = "1.0.0"` alongside `toola = "1.0.0"`, where the substring test
-confirmed both lines and would have rewritten a different tool's pin.
+hypothetical — `nubx` is nub's own alias.
 
-Prose is a candidate **even when it names the tool**. Found by running this search in
-the repo the skill was written in: it flagged the skill's own `SKILL.md` and this file,
-where `hk@2.4.0` appears inside an illustrative `amends` URL. A Markdown hit is at
-least as likely to be a historical record, a migration note, or an example as a live
-pin. The cost of a missed reference is a stale pin someone finds later; the cost of a
-wrong edit is a corrupted manifest — or a corrupted illustration.
+Prose is a candidate **even when it names the tool**: a version in Markdown is at least
+as likely to be a historical record, a migration note, or an example as a live pin. The
+cost of a missed reference is a stale pin someone finds later; the cost of a wrong edit
+is a corrupted manifest — or a corrupted illustration.
 
 ## Manager command sets
 
@@ -294,13 +287,9 @@ in [The Node lane](#the-node-lane-taze); everything else is here.
 **No `refresh`.** `mise upgrade` installs the upgraded tools and updates `mise.lock`,
 so a following `mise install` would be a second command for the same result.
 
-**`--local` is not optional.** Without it, `mise outdated` and `mise upgrade` span the
-user's global config as well. Verified in the repo this skill was written in: bare
-`mise outdated --json` reported four tools sourced from
-`~/.config/mise/config.toml` (`python`, `fnox`, `gdu`, `agent-browser`) alongside the
-one project tool, and `mise upgrade` would have upgraded all five. `--local` reduced
-the report to the project tool alone. A project-scoped bump must never reach the
-user's machine-wide tools.
+**`--local` is not optional.** Without it, `mise outdated` and `mise upgrade` reach the
+user's `~/.config/mise/config.toml` too, so a project bump would upgrade machine-wide
+tools as well. A project-scoped bump must never reach outside the project.
 
 `patch` and `minor` are **not expressible** — mise has no such lane, so they degrade
 to `default`. `mise outdated` reports only versions matching the current config, so
@@ -366,19 +355,12 @@ Yarn's `--tilde` / `--caret`.
 | `composer` | `composer.lock` | `composer outdated` *(unverified)* | `composer update` *(unverified)* | edit the constraint *(unverified)* | — |
 | `mix` | `mix.exs` | `mix hex.outdated` *(unverified)* | `mix deps.update --all` *(unverified)* | edit the constraint in `mix.exs` *(unverified)* | — |
 
-Verified by running: cargo 1.98.0, poetry 2.5.1, pip-tools 7.6.1, bundler (with
-ruby), deno, dotnet 10.0.401, maven 3.10.0, gradle 9.8.0. Maven was checked against a
-throwaway `pom.xml` and reported `com.google.guava:guava 31.0-jre -> 33.7.2-jre`, so
-both the goal and its output are real.
-
 **Bundler is a four-mode manager** — `--patch`, `--minor` and `--major` are real
 `bundle update` flags, which makes Ruby one of the few ecosystems where the fine modes
 work without taze.
 
-**Not verifiable in the authoring environment.** `php` and `elixir` cannot be
-installed by mise, so `composer` and `mix` remain documentation-derived and carry
-*(unverified)*. `dotnet`'s check and `maven`'s goals need a project fixture; the ones
-shown were confirmed against a real one.
+The *(unverified)* rows are documentation-derived rather than probed, and must be tried
+with `--help` before their first mutating use.
 
 `cargo update` respects the semver requirement already in `Cargo.toml`, so it has no
 patch/minor distinction — for a `0.x` crate the requirement is the minor.
@@ -392,38 +374,6 @@ Where a row shows `—`, there is no single command for that job: stop and ask t
 rather than assembling one.
 
 <!---
-Commands checked against the installed tool's `--help` on 2026-10-06:
-- taze 21.3.0, mise 2026.10.0, nub 0.9.6, pnpm 12.9.1, go 1.27.1, uv 0.12.23
-- npm (node 26.10.0), yarn 4.18.1, yarn 1.22.22, bun 1.4.2, cargo 1.98.0, poetry 2.5.1,
-  pip-tools 7.6.1, bundler (ruby), deno, dotnet 10.0.401, maven 3.10.0, gradle 9.8.0
-
-Yarn was checked in both directions against throwaway fixtures, because the two lines
-share a command name and only one of them has it:
-
-- berry 4.18.1: `yarn outdated` → *Couldn't find a script named 'outdated'*. No
-  non-interactive outdated listing exists; `yarn upgrade-interactive` is interactive.
-- classic 1.22.22: `yarn outdated --json` works, exits 1 with updates pending, and
-  `yarn upgrade` carries `-L/--latest`, `-T/--tilde`, `-C/--caret`, `--non-interactive`
-  — so classic alone is four-mode.
-
-Could not be probed: `php` and `elixir` are not installable by mise, so `composer`
-and `mix` stay documentation-derived; `asdf` is not installable either, and its
-`outdated` is the `asdf-outdated` plugin rather than a built-in, so an asdf-only
-project takes the unsupported-manager path instead of carrying a row.
-
-Four traps were found by running these tools against a clean tree in the repo this
-skill was written in, not by reading their docs:
-1. taze's project config can set `"write": true`, making even `taze --json` rewrite
-   the manifest. The docs still imply `-w` is required to write.
-2. `mise outdated` / `mise upgrade` default to global + local config. The docs'
-   example shows `mise outdated --local`, but nothing warns that the bare form
-   reaches the user's machine-wide tools.
-3. `nub outdated` exits 1 when updates exist while `mise outdated` exits 0, so a
-   check command's exit code cannot be used to mean "failure".
-4. `dlx`/`x` fetch a package's binary while `exec` resolves `node_modules/.bin`.
-   They sit adjacent in `--help` output, and the fetching form silently ignores the
-   project's pin.
-
 Source references:
 - https://github.com/antfu/taze
 - https://mise.jdx.dev/cli/upgrade.html

@@ -24,7 +24,7 @@ lockfile git is tracking.
 
 | Signal in the repo | Kind | Managers, in priority order |
 |---|---|---|
-| `mise.toml`, `mise.lock`, `.tool-versions` | toolchain | `mise` → `asdf` |
+| `mise.toml`, `mise.lock`, `.tool-versions` | toolchain | `mise` |
 | `package.json` | package | `nub` → `pnpm` → `npm` → `yarn` → `bun` |
 | `go.mod` | package | `go` |
 | `Cargo.toml` | package | `cargo` |
@@ -71,10 +71,13 @@ both be installed and neither may be a manager of this project.
 
 ### Unverified commands
 
-Rows marked *unverified* below are candidates read from documentation, not from the
-installed tool. **Probe them with `<command> --help` before their first mutating
-use.** If `--help` disagrees, believe `--help` and report the correction; if it
-cannot answer, stop and ask.
+Only two rows still carry an unverified claim: `composer` and `mix`, because `php` and
+`elixir` cannot be installed in the authoring environment. `yarn`'s `check` is also
+unverified — `yarn outdated` is accepted by berry but may be interactive.
+
+**Probe an unverified command with `<command> --help` before its first mutating use.**
+If `--help` disagrees, believe `--help` and report the correction; if it cannot answer,
+stop and ask.
 
 ## The Node lane: taze
 
@@ -92,9 +95,9 @@ Only `taze` expresses all four modes, so **every Node package manager's recorded
 |---|---|---|
 | `nub` | `nub exec taze` | `nub update` / `nub update --latest` — `patch` and `minor` degrade |
 | `pnpm` | `pnpm exec taze` | `pnpm update` / `pnpm update --latest` — `patch` and `minor` degrade |
-| `npm` | `npx taze` | `npm update` — no wider lane |
-| `yarn` | `yarn exec taze` | `yarn up` (berry) / `yarn upgrade` (classic) |
-| `bun` | `bunx taze` | `bun update` / `bun update --latest` |
+| `npm` | `npx taze` | `npm update` — **no wider lane**, verified: `npm update` has no `--latest` |
+| `yarn` | `yarn exec taze` | `yarn up` (berry 4.18.1, verified) / `yarn upgrade` (classic, unverified) |
+| `bun` | `bunx taze` | `bun update` / `bun update --latest` (both verified, 1.4.2) |
 
 **taze is the engine only when the project already declares it** — in `dependencies`
 or `devDependencies` of `package.json`. That is the precondition for the Node lane,
@@ -124,13 +127,13 @@ hoisted:
 rm -rf node_modules && <pm> install && <pm> dedupe
 ```
 
-| Manager | `dedupe`? | `refresh` |
-|---|---|---|
-| `nub` | `nub dedupe` | `rm -rf node_modules && nub install && nub dedupe` |
-| `pnpm` | `pnpm dedupe` | `rm -rf node_modules && pnpm install && pnpm dedupe` |
-| `npm` | `npm dedupe` | `rm -rf node_modules && npm install && npm dedupe` |
-| `bun` | `bun dedupe` | `rm -rf node_modules && bun install && bun dedupe` |
-| `yarn` | berry yes, classic **no** *(unverified)* | drop the `&& yarn dedupe` when absent |
+| Manager | `detect` | check | `refresh` |
+|---|---|---|---|
+| `nub` | `nub.lock`, `packageManager=nub` | `nub outdated --json` | `rm -rf node_modules && nub install && nub dedupe` |
+| `pnpm` | `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `packageManager=pnpm` | `pnpm outdated` | `rm -rf node_modules && pnpm install && pnpm dedupe` |
+| `npm` | `package-lock.json`, `packageManager=npm` | `npm outdated --json` | `rm -rf node_modules && npm install && npm dedupe` |
+| `bun` | `bun.lock`, `bun.lockb`, `packageManager=bun` | `bun outdated` | `rm -rf node_modules && bun install && bun dedupe` |
+| `yarn` | `yarn.lock` | **unverified** — `yarn outdated` is accepted by berry 4.18.1, but it may be interactive, which would hang an agent. Probe before use | drop `&& yarn dedupe` on classic; berry has `yarn dedupe` (verified) |
 
 `dedupe` availability is decided at generation time — probe it rather than assuming,
 and record the fallback as a bare `<pm> install` when the manager has no `dedupe`.
@@ -251,10 +254,10 @@ least as likely to be a historical record, a migration note, or an example as a 
 pin. The cost of a missed reference is a stale pin someone finds later; the cost of a
 wrong edit is a corrupted manifest — or a corrupted illustration.
 
-## Verified managers
+## Manager command sets
 
-Commands below were checked against the installed tool's `--help`, at the versions
-noted.
+Every manager below was verified by running the tool. The Node family's commands live
+in [The Node lane](#the-node-lane-taze); everything else is here.
 
 ### mise — verified 2026.10.0
 
@@ -283,38 +286,6 @@ user's machine-wide tools.
 to `default`. `mise outdated` reports only versions matching the current config, so
 `node = "20"` never reports `22`; `--bump` reports the newest overall. `mise upgrade`
 keeps the config's range, `--bump` rewrites it.
-
-### nub — verified 0.9.6
-
-`detect`: `nub.lock`, `packageManager=nub` in `package.json`
-
-A Node package manager, so its `bump` map is the Node lane's four taze commands with
-`<runner>` = `nub exec taze`. Check and refresh are nub's own:
-
-| Job | Command |
-|---|---|
-| check | `nub outdated --json` |
-| refresh | `rm -rf node_modules && nub install && nub dedupe` |
-
-Native lane, when taze is not declared or its binary will not run:
-`nub update` / `nub update --latest` — which settle the tree themselves, so that lane
-needs no `refresh`.
-
-### pnpm — verified 12.9.1
-
-`detect`: `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `packageManager=pnpm`
-
-A Node package manager, so its `bump` map is the Node lane's four taze commands with
-`<runner>` = `pnpm exec taze`.
-
-| Job | Command |
-|---|---|
-| check | `pnpm outdated` |
-| refresh | `rm -rf node_modules && pnpm install && pnpm dedupe` |
-
-Native lane, when taze is not declared or its binary will not run: `pnpm update` moves
-to the newest version *within the declared range*, and `pnpm update --latest` ignores
-the range and rewrites the manifest. `patch` and `minor` degrade.
 
 ### go — verified 1.27.1
 
@@ -350,43 +321,49 @@ the requirements in `pyproject.toml`, so it goes exactly as far as the manifest
 allows. Widening past that means editing a requirement — that is a decision, not a
 bump, so degrade and report.
 
-## Unverified managers
+### Non-Node managers
 
-Probe with `--help` before first mutating use.
+Probed against installed tools on 2026-10-06. Where a cell says **unverified**, that
+specific claim could not be confirmed and must be probed with `--help` before its first
+mutating use.
 
 | Manager | `detect` | check | bump `default` | wider bump | refresh |
 |---|---|---|---|---|---|
-| `npm` | `package-lock.json`, `packageManager=npm` | `npm outdated --json` | Node lane | Node lane | `npm install` |
-| `yarn` | `yarn.lock` | `yarn outdated` | Node lane | Node lane | `yarn install` |
-| `bun` | `bun.lock`, `bun.lockb`, `packageManager=bun` | `bun outdated` | Node lane | Node lane | Node lane |
-| `cargo` | `Cargo.toml` | `cargo update --dry-run` | `cargo update` | `cargo upgrade --incompatible` (needs `cargo-edit`) | — |
+| `cargo` | `Cargo.toml` | `cargo update --dry-run` | `cargo update` | `cargo update --breaking` (unstable flag) or `cargo upgrade --incompatible` (needs `cargo-edit`) | — |
 | `poetry` | `poetry.lock`, `[tool.poetry]` | `poetry show --outdated` | `poetry update` | edit the constraint, then `poetry update` | — |
 | `pip-tools` | `requirements.txt` + `requirements.in` | `pip-compile --dry-run --upgrade` | `pip-compile` | `pip-compile --upgrade` | `pip-sync` |
-| `bundler` | `Gemfile.lock` | `bundle outdated` | `bundle update` | `bundle update --major` (`--minor`, `--patch` also exist) | — |
-| `composer` | `composer.lock` | `composer outdated` | `composer update` | edit the constraint, then `composer update` | — |
-| `deno` | `deno.json`, `deno.jsonc` | `deno outdated` | `deno outdated --update` | — | — |
-| `mix` | `mix.exs` | `mix hex.outdated` | `mix deps.update --all` | edit the constraint in `mix.exs` | — |
-| `dotnet` | `*.csproj`, `*.sln` | `dotnet list package --outdated` | `dotnet add package <id>` | — | — |
+| `bundler` | `Gemfile.lock` | `bundle outdated` | `bundle update --all` | `bundle update --all --patch` / `--minor` / `--major` | — |
+| `deno` | `deno.json`, `deno.jsonc` | `deno outdated` | `deno outdated --update` | `deno outdated --update --latest` | — |
+| `dotnet` | `*.csproj`, `*.sln` | `dotnet list package --outdated` | `dotnet add package <id>` — **per package only**, there is no bulk bump | — | — |
 | `maven` | `pom.xml` | `mvn versions:display-dependency-updates` | `mvn versions:use-latest-releases` | — | — |
-| `gradle` | `build.gradle*` | `./gradlew dependencyUpdates` (ben-manes plugin) | — | — | — |
-| `asdf` | `.tool-versions` without `mise` | `asdf outdated` (needs the `asdf-outdated` plugin) | — | — | — |
+| `gradle` | `build.gradle*` | `dependencyUpdates` is **not a built-in task** (verified: `gradle help --task dependencyUpdates` → not found); it needs the ben-manes plugin | — | — | — |
+| `composer` | `composer.lock` | `composer outdated` *(unverified)* | `composer update` *(unverified)* | edit the constraint *(unverified)* | — |
+| `mix` | `mix.exs` | `mix hex.outdated` *(unverified)* | `mix deps.update --all` *(unverified)* | edit the constraint in `mix.exs` *(unverified)* | — |
 
-The `refresh` column follows the same rule as the verified rows: include it only where
-the bump writes the manifest or lockfile **without** installing. `pip-tools` is the one
-unverified manager where that happens — `pip-compile` writes `requirements.txt` and
-`pip-sync` installs it. Everything else settles in its `bump` command.
+Verified by running: cargo 1.98.0, poetry 2.5.1, pip-tools 7.6.1, bundler (with
+ruby), deno, dotnet 10.0.401, maven 3.10.0, gradle 9.8.0. Maven was checked against a
+throwaway `pom.xml` and reported `com.google.guava:guava 31.0-jre -> 33.7.2-jre`, so
+both the goal and its output are real.
 
-Where a row shows `—`, there is no single command for that job: stop and ask the
-user rather than assembling one.
+**Bundler is a four-mode manager** — `--patch`, `--minor` and `--major` are real
+`bundle update` flags, which makes Ruby one of the few ecosystems where the fine modes
+work without taze.
 
-Rows marked `Node lane` get the four taze commands from
-[The Node lane](#the-node-lane-taze); the native lane in that section's table is
-their fallback.
+**Not verifiable in the authoring environment.** `php` and `elixir` cannot be
+installed by mise, so `composer` and `mix` remain documentation-derived and carry
+*(unverified)*. `dotnet`'s check and `maven`'s goals need a project fixture; the ones
+shown were confirmed against a real one.
 
 `cargo update` respects the semver requirement already in `Cargo.toml`, so it has no
-patch/minor distinction — for a `0.x` crate the requirement is the minor. `mix` and
-`composer` dependencies are usually declared with a range, so their `default` lane
-already covers minor releases.
+patch/minor distinction — for a `0.x` crate the requirement is the minor.
+
+The `refresh` column follows the same rule as the verified rows: include it only where
+the bump writes the manifest or lockfile **without** installing. `pip-tools` is the
+only manager here where that happens — `pip-compile` writes `requirements.txt` and
+`pip-sync` installs it. Everything else settles in its `bump` command.
+
+Where a row shows `—`, there is no single command for that job: stop and ask the user
+rather than assembling one.
 
 ## `.justbump/managers.json`
 
@@ -456,8 +433,15 @@ exact even when a command creates a lockfile that did not exist before.
 <!---
 Commands checked against the installed tool's `--help` on 2026-10-06:
 - taze 21.3.0, mise 2026.10.0, nub 0.9.6, pnpm 12.9.1, go 1.27.1, uv 0.12.23
+- npm (node 26.10.0), yarn 4.18.1, bun 1.4.2, cargo 1.98.0, poetry 2.5.1,
+  pip-tools 7.6.1, bundler (ruby), deno, dotnet 10.0.401, maven 3.10.0, gradle 9.8.0
 
-Three traps were found by running these tools against a clean tree in the repo this
+Could not be probed: `php` and `elixir` are not installable by mise, so `composer`
+and `mix` stay documentation-derived; `asdf` is not installable either, and its
+`outdated` is the `asdf-outdated` plugin rather than a built-in, so an asdf-only
+project takes the unsupported-manager path instead of carrying a row.
+
+Four traps were found by running these tools against a clean tree in the repo this
 skill was written in, not by reading their docs:
 1. taze's project config can set `"write": true`, making even `taze --json` rewrite
    the manifest. The docs still imply `-w` is required to write.

@@ -56,7 +56,9 @@ If the file does not exist, generate it:
 
 1. **Detect** from the matrix.
 2. **Write the file.** A manager the matrix covers gets `commands`; one it does not
-   gets a record with `detect` and **no `commands`**. Schema in the reference.
+   gets a record with `detect` and **no `commands`**. A Node package manager gets the
+   four-mode Node lane only if `package.json` already declares taze — otherwise it
+   gets its native lane and two modes. Schema in the reference.
 3. **Show the user what you detected and wait.** List the supported and unsupported
    managers separately. This is the one gate where a wrong detection is cheap to fix
    and a wrong command is not.
@@ -70,13 +72,26 @@ Signals are cheap to re-check. Tell the user when a recorded manager's signal ha
 gone, or when the repo carries a signal no record covers, and offer to regenerate —
 that is what keeps path 2 from depending on the user happening to notice.
 
+A `version` that is not the current schema version also means regenerate. The `bump`
+map's meaning changed between versions, so an old file describes commands that are
+not the ones this skill would run.
+
 Never invent a command for a manager the matrix does not cover.
 
 ## Step 2 — precondition and plan
 
-**Refuse to start on a dirty working tree.** Git is the rollback mechanism, and a
-dirty tree makes rollback ambiguous. If the user asks to proceed anyway, keep an
-exact record of the paths the run touches.
+**Refuse to start with uncommitted changes to tracked files.** Git is the rollback
+mechanism, and a modified tracked file makes "restore what the run touched"
+indistinguishable from "keep what the user already had". **Untracked files are
+fine** — `.justbump/managers.json` is itself untracked on first run, so a clean-tree
+rule that counted untracked files would forbid justbump's own first run.
+
+The one untracked case that still blocks a command: a path the bump would write that
+already exists untracked. Rollback cannot restore a file git never had, so stop and
+ask about those before running.
+
+If the user asks to proceed with tracked changes anyway, keep an exact record of the
+paths the run touches and say plainly that rollback is limited to them.
 
 Then show the plan and wait:
 
@@ -92,13 +107,27 @@ degrade to `default` becomes visible *before* the run instead of in the report.
 
 ## Step 3 — bump
 
-Run each manager's `bump` command for the requested mode — its `engine` if the
-record declares one, otherwise its native lane. Then run `refresh` so the lockfile
-agrees with the manifest.
+Run each manager's recorded `bump` command for the requested mode. **What runs is
+what the file says** — there is no override layer and nothing to expand at run time.
+Then run `refresh` where the record has one. Its job is that **the verification in
+step 5 exercises the bumped versions**: a `bump` that only edits the manifest leaves
+the lockfile and `node_modules` on the old versions, and a check run against those
+proves nothing. Records omit `refresh` where `bump` already settles the tree.
 
-**If a bump command fails, fix it and carry on. Do not ask.** A non-zero exit here
+If a recorded command cannot run — most often a Node project whose `node_modules` is
+not installed, so the declared taze binary is missing — run the manager's `refresh`
+first (it installs `node_modules`), then retry the `bump`. If it still cannot run, use
+that manager's native lane from [references/managers.md](references/managers.md), and
+report both the fallback and the mode degradation it causes.
+
+**If a `bump` or `refresh` command fails, fix it and carry on. Do not ask.** A non-zero
+exit here
 is a broken assumption — a bad flag, a missing tool, a stale lockfile — not a
 decision for the user. Remember every fix so the report can disclose it.
+
+**Only `bump` and `refresh` failures count here.** A `check` command exiting non-zero
+is not a failure — some managers signal "updates available" that way. Read its output, not
+its exit code.
 
 **Three attempts per manager.** If you cannot land it in three, stop and offer the
 user: roll back, exclude that manager, or describe the situation.
@@ -184,13 +213,15 @@ precondition in step 2 is what makes this exact. Ask before doing it.
   invocation into a write, so inspect with the manager's native `check` and call
   taze only where a write is intended. See
   [references/managers.md](references/managers.md).
-- **Never install justbump's own tooling into the project.** Run taze through the
-  project's runner (`nub dlx`, `pnpm dlx`, `npx --yes`); never add it to
-  `package.json`. A bump run that edits the manifest to add its own tool would
-  contaminate the diff and the report.
+- **Never install justbump's own tooling into the project.** A Node package manager
+  uses taze only when `package.json` already declares it, and runs the **declared**
+  binary (`nub exec taze`) rather than fetching one — the fetching forms ignore the
+  project's pin and need the network. Either way taze is never added to
+  `package.json`; that is visible in the config the user reviews, and a bump run that
+  edits the manifest to add its own tool would contaminate the diff and the report.
 - **Never silently skip a manager.** Degrade and report, or fail and report.
 - **Never widen scope.** The mode is a ceiling the user asked for.
-- **One manager owns each version.** Pass taze `--no-node-version
-  --no-github-actions` so it stays inside `package.json` and never fights `mise`
-  for `node`.
+- **One manager owns each version.** The recorded taze commands keep `node`-version
+  and GitHub Actions handling off, so taze stays inside `package.json` and never
+  fights `mise` for `node`.
 - **Do not commit without being asked.** Print the commands first.

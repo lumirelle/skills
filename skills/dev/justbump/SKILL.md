@@ -110,6 +110,12 @@ degrade to `default` becomes visible *before* the run instead of in the report.
 
 Run each manager's recorded `bump` command for the requested mode. **What runs is
 what the file says** — there is no override layer and nothing to expand at run time.
+
+**Skip a manager whose `check` reported nothing to change.** No bump to make means no
+`refresh` either — and the Node lane's `refresh` is `rm -rf node_modules && …`, which
+would churn the tree and possibly touch the lockfile for zero version movement. Report
+that manager as `unchanged` and move on. A mode the manager cannot express is *not* a
+reason to skip it; that is `degrade`, and it still runs.
 Then run `refresh` where the record has one. Its job is that **the verification in
 step 5 exercises the bumped versions**: a `bump` that only edits the manifest leaves
 the lockfile and `node_modules` on the old versions, and a check run against those

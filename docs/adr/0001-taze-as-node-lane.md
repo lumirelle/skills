@@ -45,5 +45,8 @@ Sharpest consequence: taze is not safe to use for inspection. Its project config
 (`.tazerc.json` / a `taze` key in `package.json`) can set `"write": true`, which
 makes even `taze --json` rewrite the manifest — found by running it against a clean
 tree, not by reading the docs, which still imply `-w` is required. So `check` is
-always the native manager's job and taze is only ever invoked where a write is
-wanted.
+always the native manager's job, with one verified exception: yarn berry has **no**
+non-interactive outdated listing at all (`yarn outdated` → *Couldn't find a script
+named 'outdated'*; `yarn upgrade-interactive` is interactive), so there the check is
+`<runner> taze --json --no-write`. The flag is what makes that safe, and dropping it
+would silently re-introduce the write.

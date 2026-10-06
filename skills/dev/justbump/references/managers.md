@@ -72,8 +72,7 @@ both be installed and neither may be a manager of this project.
 ### Unverified commands
 
 Only two rows still carry an unverified claim: `composer` and `mix`, because `php` and
-`elixir` cannot be installed in the authoring environment. `yarn`'s `check` is also
-unverified — `yarn outdated` is accepted by berry but may be interactive.
+`elixir` cannot be installed in the authoring environment.
 
 **Probe an unverified command with `<command> --help` before its first mutating use.**
 If `--help` disagrees, believe `--help` and report the correction; if it cannot answer,
@@ -96,7 +95,7 @@ Only `taze` expresses all four modes, so **every Node package manager's recorded
 | `nub` | `nub exec taze` | `nub update` / `nub update --latest` — `patch` and `minor` degrade |
 | `pnpm` | `pnpm exec taze` | `pnpm update` / `pnpm update --latest` — `patch` and `minor` degrade |
 | `npm` | `npx taze` | `npm update` — **no wider lane**, verified: `npm update` has no `--latest` |
-| `yarn` | `yarn exec taze` | `yarn up` (berry 4.18.1, verified) / `yarn upgrade` (classic, unverified) |
+| `yarn` | `yarn exec taze` | classic is **four-mode** (verified): `yarn upgrade` / `--latest --tilde` / `--latest --caret` / `--latest`; berry has only `yarn up` (default) |
 | `bun` | `bunx taze` | `bun update` / `bun update --latest` (both verified, 1.4.2) |
 
 **taze is the engine only when the project already declares it** — in `dependencies`
@@ -133,7 +132,7 @@ rm -rf node_modules && <pm> install && <pm> dedupe
 | `pnpm` | `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `packageManager=pnpm` | `pnpm outdated` | `rm -rf node_modules && pnpm install && pnpm dedupe` |
 | `npm` | `package-lock.json`, `packageManager=npm` | `npm outdated --json` | `rm -rf node_modules && npm install && npm dedupe` |
 | `bun` | `bun.lock`, `bun.lockb`, `packageManager=bun` | `bun outdated` | `rm -rf node_modules && bun install && bun dedupe` |
-| `yarn` | `yarn.lock` | **unverified** — `yarn outdated` is accepted by berry 4.18.1, but it may be interactive, which would hang an agent. Probe before use | drop `&& yarn dedupe` on classic; berry has `yarn dedupe` (verified) |
+| `yarn` | `yarn.lock` | **berry has none** — verified: `yarn outdated` → *Couldn't find a script named 'outdated'*, and the only upgrade commands are `yarn up` and the interactive `yarn upgrade-interactive`. Classic: `yarn outdated --json` (verified) | berry: `rm -rf node_modules && yarn install && yarn dedupe`; classic: `rm -rf node_modules && yarn install` (classic has no `dedupe`) |
 
 `dedupe` availability is decided at generation time — probe it rather than assuming,
 and record the fallback as a bare `<pm> install` when the manager has no `dedupe`.
@@ -195,8 +194,16 @@ command — see the taze traps above.
 **Read the output, not the exit code.** Check commands disagree about what "outdated
 found" means to a shell: verified in the repo this skill was written in,
 `nub outdated --json` exits **1** when updates exist while `mise outdated --json`
-exits **0**. A non-zero `check` is not a step-3 failure to fix — parse the JSON, and
-treat an empty result as nothing to bump.
+exits **0**. Classic `yarn outdated` also exits **1** with updates pending. A non-zero
+`check` is not a step-3 failure to fix — parse the output, and treat an empty result as
+nothing to bump.
+
+**One exception to "always use the manager's own check".** Where a Node manager has no
+native check — yarn berry, verified above — the check is
+`<runner> taze --json --no-write`, a read-only taze run. `--no-write` overrides a
+project's `"write": true`, which is the only reason taze can be trusted here at all;
+never drop the flag. If taze is not declared either, there is no check: record it,
+report it, and stop rather than guessing.
 
 ## Stale references
 
@@ -433,8 +440,17 @@ exact even when a command creates a lockfile that did not exist before.
 <!---
 Commands checked against the installed tool's `--help` on 2026-10-06:
 - taze 21.3.0, mise 2026.10.0, nub 0.9.6, pnpm 12.9.1, go 1.27.1, uv 0.12.23
-- npm (node 26.10.0), yarn 4.18.1, bun 1.4.2, cargo 1.98.0, poetry 2.5.1,
+- npm (node 26.10.0), yarn 4.18.1, yarn 1.22.22, bun 1.4.2, cargo 1.98.0, poetry 2.5.1,
   pip-tools 7.6.1, bundler (ruby), deno, dotnet 10.0.401, maven 3.10.0, gradle 9.8.0
+
+Yarn was checked in both directions against throwaway fixtures, because the two lines
+share a command name and only one of them has it:
+
+- berry 4.18.1: `yarn outdated` → *Couldn't find a script named 'outdated'*. No
+  non-interactive outdated listing exists; `yarn upgrade-interactive` is interactive.
+- classic 1.22.22: `yarn outdated --json` works, exits 1 with updates pending, and
+  `yarn upgrade` carries `-L/--latest`, `-T/--tilde`, `-C/--caret`, `--non-interactive`
+  — so classic alone is four-mode.
 
 Could not be probed: `php` and `elixir` are not installable by mise, so `composer`
 and `mix` stay documentation-derived; `asdf` is not installable either, and its

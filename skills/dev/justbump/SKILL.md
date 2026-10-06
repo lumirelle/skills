@@ -59,7 +59,8 @@ If the file does not exist, generate it:
 2. **Write the file.** A manager the matrix covers gets `commands`; one it does not
    gets a record with `detect` and **no `commands`**. A Node package manager gets the
    four-mode Node lane only if `package.json` already declares taze — otherwise it
-   gets its native lane and two modes. Schema in [schema.md](references/schema.md).
+   gets its native lane and two modes. Schema in
+   [references/schema.md](references/schema.md).
 3. **Show the user what you detected and wait.** List the supported and unsupported
    managers separately. This is the one gate where a wrong detection is cheap to fix
    and a wrong command is not.
@@ -234,10 +235,11 @@ Print the exact commands. **Ask before running them.**
 One commit per manager, matching the report's grouping, plus one exclusive commit
 per fix:
 
-**Stage the manifest and lockfile changes from the report's tables, and nothing else.**
-Installed artifacts that `refresh` produced — `node_modules/`, a `bin/`, a build output
-directory — are build output, not commits. Most repos gitignore them; a run that commits
-them has committed its own scratch space.
+**Stage the manifest and lockfile paths the run modified — tracked or newly created —
+and nothing else.** The report's tables give you the items; the run's diff gives you the
+files. Installed artifacts that `refresh` produced — `node_modules/`, a `bin/`, a build
+output directory — are build output, not commits. Most repos gitignore them; a run that
+commits them has committed its own scratch space.
 
 ```
 chore(deps): bump mise tools

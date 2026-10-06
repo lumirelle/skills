@@ -347,6 +347,12 @@ Probed against installed tools on 2026-10-06. Where a cell says **unverified**, 
 specific claim could not be confirmed and must be probed with `--help` before its first
 mutating use.
 
+**The `bump` key set follows from these columns.** Unless a row says otherwise it is
+`default` plus at most one wider key, and a `—` in the wider column means `default`
+alone. `patch` and `minor` keys appear only where the tool has a flag for that lane:
+taze for the Node family, bundler's `--patch` / `--minor` / `--major`, and classic
+Yarn's `--tilde` / `--caret`.
+
 | Manager | `detect` | check | bump `default` | wider bump | refresh |
 |---|---|---|---|---|---|
 | `cargo` | `Cargo.toml` | `cargo update --dry-run` | `cargo update` | `cargo update --breaking` (unstable flag) or `cargo upgrade --incompatible` (needs `cargo-edit`) | — |

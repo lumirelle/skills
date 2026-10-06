@@ -91,5 +91,6 @@ export const vendors: Record<string, VendorSkillMeta> = {
  * Hand-written skills with Lumirelle's preferences/tastes/recommendations
  */
 export const manual = [
+  'dev/justbump',
   'external-tool/mise',
 ]

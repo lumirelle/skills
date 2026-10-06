@@ -32,6 +32,7 @@ Manually maintained by Lumirelle with his preferred tools, setup conventions, an
 
 | Skill | Description |
 |-------|-------------|
+| [justbump](skills/dev/justbump) | Bump every pinned version in one mechanical pass — toolchain tools and dependencies — then report per manager and hand back for confirmation |
 | [mise](skills/external-tool/mise) | Onboard into a mise project: detect it, install its tools, find and run its tasks, and prefer `--help` over docs for anything else |
 
 ### Skills Generated from Official Documentation

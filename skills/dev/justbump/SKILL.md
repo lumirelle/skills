@@ -1,0 +1,196 @@
+---
+name: justbump
+description: >-
+  Bump every version this project pins — toolchain tools and package
+  dependencies — in one mechanical pass, then report by manager and hand back
+  for confirmation. Use when the user says "justbump", "bump the deps",
+  "update/upgrade the dependencies", "get everything to latest", or names a
+  mode ("bump minor", "patch bump"). Modes: default, patch, minor, major.
+  Not for installing dependencies for the first time or setting up a project —
+  that's the `mise` skill.
+---
+
+# justbump
+
+One pass over every version this repo pins: bump, refresh lockfiles, report what
+changed, hand back to the user for verification.
+
+**The diff is the record.** justbump writes no run artifacts and keeps no
+history — the git diff and the per-manager commits are the durable record.
+`.justbump/managers.json` is the only file it creates, and it is committed.
+
+## Vocabulary
+
+| Term | Meaning |
+|---|---|
+| **manager** | Something that owns pinned versions in this project. `kind: toolchain` (mise: `node`, `hk`, `pkl`) or `kind: package` (nub, pnpm, go, cargo: manifest dependencies). |
+| **mode** | The *ceiling* on the version change allowed, not a target to reach. `default` ⊂ `patch` ⊂ `minor` ⊂ `major`. |
+| **degrade** | The manager cannot express the requested mode, so it runs its nearest coarser lane and the report says so. Never silently skip a manager. |
+
+## Modes
+
+| Mode | Ceiling |
+|---|---|
+| `default` | Stay inside the range already declared in the manifest — what `npm install` / `pnpm update` / `mise upgrade` do. |
+| `patch` | Latest patch within the same minor. |
+| `minor` | Latest minor within the same major. |
+| `major` | Any newer stable. Breaking changes possible. |
+
+Bare `justbump` means `default`. Only widen when asked.
+
+Only some managers can express the fine modes. That is expected — it is what
+`degrade` is for. [references/managers.md](references/managers.md) records, per
+manager, exactly which modes its `bump` map covers.
+
+## Step 1 — the config file
+
+`.justbump/managers.json` records which managers this project uses and the exact
+command for each job.
+
+**Detection is file-based. Never infer a manager from what is installed on the
+machine.** A `pnpm` binary on `PATH` is not evidence that this project uses pnpm;
+`mise.lock` and the `packageManager` field are. The signals are in
+[references/managers.md](references/managers.md).
+
+If the file does not exist, generate it:
+
+1. **Detect** from the matrix.
+2. **Write the file.** A manager the matrix covers gets `commands`; one it does not
+   gets a record with `detect` and **no `commands`**. Schema in the reference.
+3. **Show the user what you detected and wait.** List the supported and unsupported
+   managers separately. This is the one gate where a wrong detection is cheap to fix
+   and a wrong command is not.
+4. **Offer to adopt the unsupported ones.** If the user supplies the commands for a
+   manager, record them as a normal (unverified) entry — the config file is the
+   per-project extension point, so nothing waits for the skill itself to grow a row.
+   Skipped is acceptable; silently dropped never is.
+
+If the file already exists, **rescan its `detect` signals before the plan gate**.
+Signals are cheap to re-check. Tell the user when a recorded manager's signal has
+gone, or when the repo carries a signal no record covers, and offer to regenerate —
+that is what keeps path 2 from depending on the user happening to notice.
+
+Never invent a command for a manager the matrix does not cover.
+
+## Step 2 — precondition and plan
+
+**Refuse to start on a dirty working tree.** Git is the rollback mechanism, and a
+dirty tree makes rollback ambiguous. If the user asks to proceed anyway, keep an
+exact record of the paths the run touches.
+
+Then show the plan and wait:
+
+| Manager | Kind | Mode | Command |
+|---|---|---|---|
+
+Records with no `commands` appear in this table as `skipped (out of support matrix)`
+— never omitted, never attempted.
+
+Offer three outcomes: **proceed**, **narrow scope** (drop a manager, or lower the
+mode for one of them), **cancel**. This table is where a `patch` request that will
+degrade to `default` becomes visible *before* the run instead of in the report.
+
+## Step 3 — bump
+
+Run each manager's `bump` command for the requested mode — its `engine` if the
+record declares one, otherwise its native lane. Then run `refresh` so the lockfile
+agrees with the manifest.
+
+**If a bump command fails, fix it and carry on. Do not ask.** A non-zero exit here
+is a broken assumption — a bad flag, a missing tool, a stale lockfile — not a
+decision for the user. Remember every fix so the report can disclose it.
+
+**Three attempts per manager.** If you cannot land it in three, stop and offer the
+user: roll back, exclude that manager, or describe the situation.
+
+Before running any command the reference marks *unverified*, probe it with `--help`
+first. `--help` is version-exact and offline; a web search can return a different
+release.
+
+## Step 4 — report
+
+Group by manager: one heading per manager, one table under each. Summary first:
+
+| Manager | Kind | Mode | Result |
+|---|---|---|---|
+
+`Result` is one of `bumped`, `degraded` (say what it actually ran), `fixed` (say
+what you had to fix), `failed`, `unchanged`, or `skipped` (say why).
+
+Then, per manager, one row per changed item:
+
+| Item | From | To |
+|---|---|---|
+
+Cap a table at roughly 30 rows. For anything larger, summarise per manifest file
+and state how many rows were omitted — the full detail is in the diff.
+
+If step 3 needed a fix, say so here. Never let a fix hide in the diff.
+
+## Step 5 — hand back
+
+Tell the user how to check the result, using the config's `verify` text, then wait.
+**You do not run the main flow; the user does.** Take their answer:
+
+1. **All correct** → step 7.
+2. **A manager is missing** → re-generate `.justbump/managers.json`, confirm it with
+   the user, and re-run for the missing manager.
+3. **The main flow is broken** → step 6.
+4. **Anything else** → ask the user to describe it.
+
+## Step 6 — the main flow is broken
+
+Read the release notes of the suspect dependency **first**. A breaking change is the
+most likely cause, and the notes name it directly.
+
+Reproduce it — build, test, the project's check task. The user reported a break you
+failed to prevent, so reproducing it is diagnosis, not verification. Confirm the fix
+with the user before writing it.
+
+Same three-attempt budget. On exceeding it, offer: roll back, exclude that
+dependency, or let the user describe what they see. Then return to step 5 and ask
+the user to verify again.
+
+## Step 7 — commits
+
+Print the exact commands. **Ask before running them.**
+
+One commit per manager, matching the report's grouping, plus one exclusive commit
+per fix:
+
+```
+chore(deps): bump mise tools
+chore(deps): bump node deps
+fix(deps): drop the stale --frozen-lockfile from the nub refresh
+```
+
+Per-manager commits make `git revert <sha>` a precise undo when one manager's bump
+turns out to be what broke the flow. Fix commits follow the repo's own commit
+convention.
+
+## Rollback
+
+Restore the paths the run touched and delete the files it created — the dirty-tree
+precondition in step 2 is what makes this exact. Ask before doing it.
+
+## Hard rules
+
+- **Never touch machine-global state.** Every command is scoped to the project.
+  Where a tool defaults to machine-wide behaviour, pass its scoping flag
+  (`mise --local`). "Bump this project" must never upgrade the user's globally
+  installed tools.
+- **Never detect a manager from the machine.** Only from a signal in the repo.
+- **Never use taze to look before you leap.** Its project config can turn every
+  invocation into a write, so inspect with the manager's native `check` and call
+  taze only where a write is intended. See
+  [references/managers.md](references/managers.md).
+- **Never install justbump's own tooling into the project.** Run taze through the
+  project's runner (`nub dlx`, `pnpm dlx`, `npx --yes`); never add it to
+  `package.json`. A bump run that edits the manifest to add its own tool would
+  contaminate the diff and the report.
+- **Never silently skip a manager.** Degrade and report, or fail and report.
+- **Never widen scope.** The mode is a ceiling the user asked for.
+- **One manager owns each version.** Pass taze `--no-node-version
+  --no-github-actions` so it stays inside `package.json` and never fights `mise`
+  for `node`.
+- **Do not commit without being asked.** Print the commands first.

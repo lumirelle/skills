@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "verify": "run `mise run check`, then `mise run start check` to confirm the skills CLI still runs",
+  "managers": [
+    {
+      "name": "mise",
+      "kind": "toolchain",
+      "detect": ["mise.toml", "mise.lock"],
+      "note": "project-scoped: --local keeps this off the machine-global config; no refresh because `mise upgrade` installs and updates mise.lock itself",
+      "commands": {
+        "check": "mise outdated --local --json",
+        "bump": {
+          "default": "mise upgrade --local",
+          "major": "mise upgrade --local --bump"
+        }
+      }
+    },
+    {
+      "name": "nub",
+      "kind": "package",
+      "detect": ["nub.lock", "packageManager=nub"],
+      "note": "taze declared in devDependencies, so the Node lane is available",
+      "commands": {
+        "check": "nub outdated --json",
+        "bump": {
+          "default": "nub exec taze -w --no-interactive --no-node-version --no-github-actions",
+          "patch": "nub exec taze patch -w --no-interactive --no-node-version --no-github-actions",
+          "minor": "nub exec taze minor -w --no-interactive --no-node-version --no-github-actions",
+          "major": "nub exec taze major -w --no-interactive --no-node-version --no-github-actions"
+        },
+        "refresh": "rm -rf node_modules && nub install && nub dedupe"
+      }
+    }
+  ]
+}

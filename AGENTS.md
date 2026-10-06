@@ -262,3 +262,17 @@ When generating skills (Type 1 only):
 ## Supported Projects
 
 See `meta.ts` for the canonical list of projects and their repository URLs.
+
+## Agent skills
+
+### Issue tracker
+
+Issues for this repo live as GitHub issues, managed with the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical triage roles map to their same-named labels. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.

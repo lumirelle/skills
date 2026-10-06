@@ -26,6 +26,7 @@ history — the git diff and the per-manager commits are the durable record.
 | **manager** | Something that owns pinned versions in this project. `kind: toolchain` (mise: `node`, `hk`, `pkl`) or `kind: package` (nub, pnpm, go, cargo: manifest dependencies). |
 | **mode** | The *ceiling* on the version change allowed, not a target to reach. `default` ⊂ `patch` ⊂ `minor` ⊂ `major`. |
 | **degrade** | The manager cannot express the requested mode, so it runs its nearest coarser lane and the report says so. Never silently skip a manager. |
+| **stale reference** | A hard-coded copy of an item's version living outside the manager's own files — a schema URL in another tool's config, a CI pin, a doc. The manager cannot see it, so the bump has to sweep for it. |
 
 ## Modes
 
@@ -114,6 +115,37 @@ step 5 exercises the bumped versions**: a `bump` that only edits the manifest le
 the lockfile and `node_modules` on the old versions, and a check run against those
 proves nothing. Records omit `refresh` where `bump` already settles the tree.
 
+### After each manager — sweep for stale references
+
+Sweep per manager, right after its bump, so a found reference lands in that manager's
+commit instead of floating loose.
+
+A manager does not own every copy of a version. `hk` is pinned in `mise.toml` **and**
+in `hk.pkl`, as a versioned schema URL that another tool reads:
+
+```
+amends "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl"
+```
+
+The bump updates the first copy and never sees the second. So for every item `check`
+reported as changing, search the repo for its **old** version:
+
+- Exclude `.git`, `node_modules`, `vendor/`, `sources/`, and build output — and
+  **every lockfile**. The manager already rewrote its own; a hit in one is a different
+  package, or a `refresh` that did not happen.
+- Search the decorated forms too: `2.4.0`, `v2.4.0`, `hk@2.4.0`.
+- A hit is **confirmed** only when the tool's name appears on the same line or in the
+  enclosing URL/path **and** the file is one the toolchain consumes — a config, CI,
+  container, or build file. Everything else is a **candidate**: report it, never edit
+  it. Prose is a candidate even when it names the tool: a version in Markdown is as
+  likely to be a historical record, or an illustration, as a live pin.
+
+**The main flow will not catch this**, which is why it is a rule rather than something
+the user will notice: a stale schema URL still resolves, so `hk validate` passes while
+the config quietly validates against the previous release. See
+[references/managers.md](references/managers.md#stale-references) for where
+hard-coded versions typically live.
+
 If a recorded command cannot run — most often a Node project whose `node_modules` is
 not installed, so the declared taze binary is missing — run the manager's `refresh`
 first (it installs `node_modules`), then retry the `bump`. If it still cannot run, use
@@ -154,7 +186,8 @@ Then, per manager, one row per changed item:
 Cap a table at roughly 30 rows. For anything larger, summarise per manifest file
 and state how many rows were omitted — the full detail is in the diff.
 
-If step 3 needed a fix, say so here. Never let a fix hide in the diff.
+If step 3 needed a fix, say so here — and list every stale reference you updated, or
+deliberately left alone. Never let a fix, or an untouched stale pin, hide in the diff.
 
 ## Step 5 — hand back
 

@@ -195,6 +195,62 @@ found" means to a shell: verified in the repo this skill was written in,
 exits **0**. A non-zero `check` is not a step-3 failure to fix — parse the JSON, and
 treat an empty result as nothing to bump.
 
+## Stale references
+
+A manager owns its own files; it does not own every copy of a version. `hk` is pinned
+in `mise.toml` / `mise.lock` **and** as a schema URL in `hk.pkl`:
+
+```
+amends "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl"
+```
+
+Bump `hk` and the first copy moves while the second keeps validating against 2.4.0 —
+and `hk validate` still passes, because the old release is still downloadable. The
+main flow cannot see this drift, so the sweep in step 3 has to.
+
+### Where hard-coded versions live
+
+| Place | Example |
+|---|---|
+| A tool's own schema or import URL | `package://…/v2.4.0/hk@2.4.0#/Config.pkl` in `hk.pkl` |
+| CI tool setup | `node-version: 20` in a workflow, `uses: jdx/mise-action@…` |
+| Container images | `FROM node:20.11.0` in a Dockerfile |
+| Pre-commit hooks | `rev: v1.2.3` in `.pre-commit-config.yaml` |
+| Docs, comments, READMEs | "requires Go 1.21 or newer" |
+| Task runners and Makefiles | a pinned `TOOL_VERSION :=` variable |
+
+This is most common for `kind: toolchain` tools, whose configs point at versioned
+releases, but the sweep is driven by whatever `check` said changed — a `package.json`
+dependency can be hard-coded in a doc too.
+
+### The search
+
+For each changed item, search its old version, decorated:
+
+```bash
+grep -rn -e '2\.4\.0' -e 'v2\.4\.0' -e 'hk@2\.4\.0' \
+  --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=vendor \
+  --exclude-dir=sources --exclude-dir=dist --exclude-dir=coverage .
+```
+
+**The exclusions are load-bearing.** `nub.lock` legitimately contains
+`eslint-config-flat-gitignore@2.4.0` and `jsonc-eslint-parser: ^2.4.0` — unrelated
+packages that share a version string with an `hk` release. Every lockfile is excluded
+for that reason, and the manager has already rewritten its own.
+
+**Confirmed vs candidate.** A hit is confirmed when the tool's name appears on the same
+line or in the enclosing URL/path (`hk@2.4.0`, `github.com/jdx/hk/releases/…`) **and**
+the file is one the toolchain consumes — a `*.pkl` / `*.toml` / `*.yaml` / `*.json`
+config, a CI workflow, a Dockerfile, a Makefile. Everything else is a candidate: report
+it, never edit it.
+
+Prose is a candidate **even when it names the tool**. Found by running this search in
+the repo the skill was written in: it flagged the skill's own `SKILL.md` and this file,
+where `hk@2.4.0` appears inside an illustrative `amends` URL. A Markdown hit is at
+least as likely to be a historical record, a migration note, or an example as a live
+pin. The cost of a missed reference is a stale pin someone finds later; the cost of a
+wrong edit is a corrupted manifest — or a corrupted illustration.
+
 ## Verified managers
 
 Commands below were checked against the installed tool's `--help`, at the versions

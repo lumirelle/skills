@@ -87,9 +87,11 @@ indistinguishable from "keep what the user already had". **Untracked files are
 fine** — `.justbump/managers.json` is itself untracked on first run, so a clean-tree
 rule that counted untracked files would forbid justbump's own first run.
 
-The one untracked case that still blocks a command: a path the bump would write that
-already exists untracked. Rollback cannot restore a file git never had, so stop and
-ask about those before running.
+Untracked files are allowed. But you cannot know in advance which paths a bump will
+write, so do not pretend to — **snapshot the untracked paths and a hash of each before
+the run, and compare afterwards.** Any untracked file that existed before and changed
+during the run is one rollback cannot restore; report it plainly instead of discovering
+it mid-rollback.
 
 If the user asks to proceed with tracked changes anyway, keep an exact record of the
 paths the run touches and say plainly that rollback is limited to them.
@@ -141,10 +143,13 @@ reported as changing, search the repo for its **old** version:
   package, or a `refresh` that did not happen.
 - Search the decorated forms too: `2.4.0`, `v2.4.0`, `hk@2.4.0`.
 - A hit is **confirmed** only when the tool's name appears on the same line or in the
-  enclosing URL/path **and** the file is one the toolchain consumes — a config, CI,
-  container, or build file. Everything else is a **candidate**: report it, never edit
-  it. Prose is a candidate even when it names the tool: a version in Markdown is as
-  likely to be a historical record, or an illustration, as a live pin.
+  enclosing URL/path **as a whole token**, and the file is one the toolchain consumes —
+  a config, CI, container, or build file. Everything else is a **candidate**: report
+  it, never edit it. A substring is not a match: `go` must not confirm
+  `golangci-lint`, `hk` must not confirm `hkx`, `uv` must not confirm `uvicorn`, `nub`
+  must not confirm `nubx` (nub's own alias). Prose is a candidate even when it names the
+  tool: a version in Markdown is as likely to be a historical record, or an
+  illustration, as a live pin.
 
 **The main flow will not catch this**, which is why it is a rule rather than something
 the user will notice: a stale schema URL still resolves, so `hk validate` passes while
@@ -238,8 +243,15 @@ convention.
 
 ## Rollback
 
-Restore the paths the run touched and delete the files it created — the dirty-tree
-precondition in step 2 is what makes this exact. Ask before doing it.
+Restore the manager-owned paths the run touched and delete the files it created — the
+clean-tracked-tree precondition in step 2 is what makes this exact. Ask before doing it.
+
+**Leave `.justbump/managers.json` alone.** A command correction found during the run is
+a fix to keep, not state to undo — reverting it only reproduces the same failure next
+run. Its diff stays visible, and it belongs in the fix commit from step 7.
+
+Any pre-existing untracked file the run changed cannot be restored; say so explicitly
+rather than presenting the rollback as complete.
 
 ## Hard rules
 

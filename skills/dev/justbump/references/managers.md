@@ -250,10 +250,18 @@ packages that share a version string with an `hk` release. Every lockfile is exc
 for that reason, and the manager has already rewritten its own.
 
 **Confirmed vs candidate.** A hit is confirmed when the tool's name appears on the same
-line or in the enclosing URL/path (`hk@2.4.0`, `github.com/jdx/hk/releases/…`) **and**
-the file is one the toolchain consumes — a `*.pkl` / `*.toml` / `*.yaml` / `*.json`
-config, a CI workflow, a Dockerfile, a Makefile. Everything else is a candidate: report
-it, never edit it.
+line or in the enclosing URL/path (`hk@2.4.0`, `github.com/jdx/hk/releases/…`), **as a
+whole token**, **and** the file is one the toolchain consumes — a `*.pkl` / `*.toml` /
+`*.yaml` / `*.json` config, a CI workflow, a Dockerfile, a Makefile. Everything else is
+a candidate: report it, never edit it.
+
+**A substring is not a match.** Require a delimiter that is not `[A-Za-z0-9_-]` — `@`,
+`/`, `.`, space, quote, or end of line — on both sides. Otherwise a tool whose name is a
+prefix of another's gets confirmed on the other's line: `go` matches `golangci-lint`,
+`hk` matches `hkx`, `uv` matches `uvicorn`, `nub` matches `nubx`. That last one is not
+hypothetical — `nubx` is nub's own alias. Found by running the rule against a fixture
+holding `toolab = "1.0.0"` alongside `toola = "1.0.0"`, where the substring test
+confirmed both lines and would have rewritten a different tool's pin.
 
 Prose is a candidate **even when it names the tool**. Found by running this search in
 the repo the skill was written in: it flagged the skill's own `SKILL.md` and this file,

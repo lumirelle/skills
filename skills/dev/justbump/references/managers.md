@@ -70,6 +70,10 @@ either, it is an ordinary step-3 failure to fix and report.
 Note that a tool being *installed* is never the reverse signal. `uv` and `pnpm` may
 both be installed and neither may be a manager of this project.
 
+A manager with no row in this file — one the user supplied at the generation gate — has
+**no native lane**. Nothing here describes its fallback, so a failure there is a stop
+and ask, never a guess.
+
 ### Unverified commands
 
 Only two rows still carry an unverified claim: `composer` and `mix`, because `php` and

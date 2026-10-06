@@ -163,6 +163,9 @@ first (it installs `node_modules`), then retry the `bump`. If it still cannot ru
 that manager's native lane from [references/managers.md](references/managers.md), and
 report both the fallback and the mode degradation it causes.
 
+If the manager is **not in the matrix** — one the user supplied at the generation gate
+— there is no native lane to fall back to. Stop and ask.
+
 **If a `bump` or `refresh` command fails, fix it and carry on. Do not ask.** A non-zero
 exit here
 is a broken assumption — a bad flag, a missing tool, a stale lockfile — not a
@@ -230,6 +233,11 @@ Print the exact commands. **Ask before running them.**
 
 One commit per manager, matching the report's grouping, plus one exclusive commit
 per fix:
+
+**Stage the manifest and lockfile changes from the report's tables, and nothing else.**
+Installed artifacts that `refresh` produced — `node_modules/`, a `bin/`, a build output
+directory — are build output, not commits. Most repos gitignore them; a run that commits
+them has committed its own scratch space.
 
 ```
 chore(deps): bump mise tools

@@ -360,9 +360,15 @@ function getExistingSkillNames(): string[] {
   if (!existsSync(skillsDir))
     return []
 
+  // Skills live at skills/<category>/<skill>, so return that same shape. Listing the
+  // top-level directories instead yields bare category names, which never match the
+  // category/skill paths in meta.ts - every category then counts as "extra" and gets
+  // removed wholesale, taking manual skills with it.
   return readdirSync(skillsDir, { withFileTypes: true })
     .filter(entry => entry.isDirectory())
-    .map(entry => entry.name)
+    .flatMap(category => readdirSync(join(skillsDir, category.name), { withFileTypes: true })
+      .filter(entry => entry.isDirectory())
+      .map(entry => `${category.name}/${entry.name}`))
 }
 
 async function cleanup(skipPrompt = false) {
@@ -448,6 +454,13 @@ async function cleanup(skipPrompt = false) {
     if (shouldRemove) {
       hasChanges = true
       for (const skillName of extraSkills) {
+        // Guard the blast radius: a bare name here is a category directory, and
+        // removing it deletes every skill under it. Refuse loudly instead.
+        if (!skillName.includes('/')) {
+          spinner.stop(`Refusing to remove ${skillName}: not a category/skill path`)
+          continue
+        }
+
         spinner.start(`Removing skill: ${skillName}`)
         try {
           rmSync(join(root, 'skills', skillName), { recursive: true })

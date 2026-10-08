@@ -9,24 +9,19 @@ reports what changed grouped by manager, and then gets out of the way while you 
 
 ## Why it exists
 
-Updating versions by hand goes wrong in two ways that nothing else catches.
+Keeping a project's pins fresh is mechanical work: the same commands, in the same order,
+against however many managers the repo happens to use. Doing it by hand is slow and easy
+to do half-way, so it gets postponed — which is the job an agent should simply take over.
+justbump hands the agent the per-manager commands and the order to run them, so the
+whole pass costs one invocation instead of an afternoon of typing.
 
-**Half-done bumps.** Most tools will update a manifest without touching the lockfile or
-the installed tree. A project whose `package.json` says `^1.87.0` while `node_modules`
-still holds `1.86.0` looks fine and passes tests — it's just testing the old code.
+The other obvious answer is Renovate or Dependabot, and that trade is deliberate: they
+run on *their* schedule. The bot decides when to open PRs, and you get a standing queue of
+dependency updates you didn't ask for — every one of them needing review before it can be
+merged or dismissed. justbump inverts that. Nothing runs until you say so, and one run
+bumps everything at once instead of dripping PRs at you.
 
-**Versions that live in two places.** `hk` is pinned in `mise.toml` *and* hard-coded in
-`hk.pkl` as a schema URL another tool reads:
-
-```pkl
-amends "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl"
-```
-
-Bump the tool and the first copy moves while the second silently keeps validating
-against the old release. `hk validate` still passes, so nothing tells you.
-
-justbump closes both: it runs each manager's own update *and* its refresh, then sweeps
-the repo for hard-coded copies of the versions it just moved.
+**You decide when. The agent does the work.**
 
 ## Install
 

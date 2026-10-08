@@ -137,6 +137,12 @@ Fork this project to create your own customized skill collection.
 
 See [AGENTS.md](AGENTS.md) for detailed generation guidelines.
 
+## Thanks
+
+This project is forked from and inspired by [antfu/skills](https://github.com/antfu/skills) by [Anthony Fu](https://github.com/antfu). The skills layout, the `meta.ts` config shape, and the original `scripts/cli.ts` come from there. On top of that, this fork layers Lumirelle's own opinionated customizations — mise + nub + hk tooling, its own skill set, and a few CLI fixes.
+
+Thanks also to the upstream projects whose skills are vendored in this collection; see [`meta.ts`](meta.ts) for the full list.
+
 ## Sponsors
 
 <p align="center">

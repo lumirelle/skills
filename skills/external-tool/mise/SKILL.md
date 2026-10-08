@@ -24,10 +24,6 @@ against the **installed** version. `--help` is version-exact, offline, and alway
 current; searching the web can return a different release and costs a round-trip.
 Only fall back to the online docs when `--help` genuinely doesn't answer.
 
-This is not just a mise rule — it generalizes to every CLI: reach for `--help`
-before a skill, a web search, or the docs. mise's author makes the point plainly —
-an agent should learn a tool from `--help`, the same way a human does.
-
 ## Is this a mise project?
 
 Any of these means yes:
@@ -42,12 +38,14 @@ Any of these means yes:
 1. **Read the config.** Open `mise.toml` and note three sections:
    `[tools]` (runtimes and CLIs), `[env]` (variables loaded for every command),
    `[tasks]` (named scripts). Run `mise config ls` to see every active file.
-2. **Install the declared tools:** `mise install`.
-   Do **not** install tools with `brew` / `npm -g` / `pip` — they are already declared
-   here, and a second copy breaks version selection.
-3. **Find the project's entrypoint:** `mise tasks ls` (aliases: `mise tasks`).
-   Look for `setup` / `bootstrap` / `dev` / `test` / `build`. A `setup` task is the
-   intended first-run command — run it.
+2. **Install tools only when mise says so.** Don't pre-install: just try the command you
+   need. When mise reports a tool missing (or offers to install it), then run
+   `mise install`. Do **not** install tools with `brew` / `npm -g` / `pip` — they are
+   already declared here, and a second copy breaks version selection.
+3. **Survey the tasks:** `mise tasks ls` (aliases: `mise tasks`) to list everything the
+   project defines. Don't guess task names from convention — read their descriptions,
+   and when a task's purpose is unclear, read its actual definition (`[tasks.<name>]` in
+   `mise.toml`, or the file a file-task points at) before choosing which to run.
 4. **Run work through mise.** Prefer `mise run <task>` over hand-assembling commands
    from the README, `package.json`, or CI: the task already carries the right tools,
    environment, and ordering.
@@ -67,6 +65,17 @@ Any of these means yes:
 `mise exec` and `mise run` work without shell activation, so prefer them in scripts,
 CI, and non-interactive agent shells.
 
+## Finding a tool
+
+When you need a tool mise could manage but don't know its registry name, look it up before
+`mise use`:
+
+- `https://mise-versions.jdx.dev/?q=<query>` — browsable search over the registry: name,
+  description, latest stable version, backends, and download stats.
+- `https://mise-versions.jdx.dev/tools.json` (or `/api/tools`) — the same data as JSON,
+  better for an exact name/backend lookup by a script than the search UI.
+- `mise ls-remote <tool>` — the versions actually installable for one known tool.
+
 ## Skills shipped by mise-managed tools
 
 Some tools mise installs ship their own agent skills. List them with
@@ -79,10 +88,15 @@ tool version active in this project.
 
 - **Let mise manage tools.** Install with `mise install`, add with `mise use`. Never
   reach for a second package manager for a tool mise already declares.
-- **Don't bypass tasks.** If `[tasks]` defines `setup` / `test` / `build`, use it
-  instead of guessing the underlying command.
-- **Environment variables come from `[env]`.** Don't recreate them in `.env` or hardcode
-  them; the config is the source of truth.
+- **Don't bypass tasks.** If `[tasks]` defines a task for what you need, run it instead
+  of guessing the underlying command — it carries the right tools, env, and ordering.
+- **Environment variables are declared in mise config.** `[env]` holds literal values,
+  `env._.file` loads a dotenv/JSON/YAML/TOML file, `env._.path` adds `PATH` entries, and
+  `env._.source` pulls exported vars out of a bash script; mise then supplies the result to
+  `mise exec`, tasks, and activated shells. Whatever a config already declares is the
+  source of truth — don't restate those values in a shell profile or CI, or hardcode them
+  in the code. Only variables that configure mise itself (`MISE_*`) belong in the ambient
+  shell/CI environment, since mise reads them at process start.
 - **Keep versions pinned.** Commit `mise.toml` and `mise.lock`; change version requests
   with `mise use`, don't hand-edit the lockfile.
 - **Don't run state-changing commands reflexively.** `mise use` and `mise trust` change
@@ -90,6 +104,9 @@ tool version active in this project.
 
 ## Gotchas
 
+- **Warnings are actionable.** When mise prints a warning or deprecation notice, read it
+  and fix it on the spot if it's a quick, in-scope change (renamed key, unused setting,
+  outdated version request). Otherwise surface it instead of ignoring it.
 - **Trust.** In normal mode, `mise install` / `exec` / `run` / `watch` auto-trust the
   active config, and plain `[tools]` version strings need no trust. Only **paranoid mode**
   requires explicit `mise trust`. If you hit an untrusted-config error, run `mise trust`.
@@ -113,6 +130,8 @@ tool version active in this project.
 <!--
 Distilled from the official mise docs (mise 2026.10.0):
 - https://mise.jdx.dev/getting-started.html
+- https://mise.jdx.dev/environments/
+- https://mise-versions.jdx.dev/tools.json (tool registry lookup)
 - https://mise.jdx.dev/cli/trust.html
 - https://mise.jdx.dev/cli/skills.html
 - https://mise.jdx.dev/llms.txt

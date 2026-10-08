@@ -1,0 +1,16 @@
+name: autofix.ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions: {}
+
+jobs:
+  autofix:
+    uses: lumirelle/workflows/.github/workflows/ci-autofix.yml@v10
+    permissions:
+      contents: read
+    with:
+      cache-preset: 'mise-task,nub'

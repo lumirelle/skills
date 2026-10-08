@@ -1,0 +1,16 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  ci:
+    uses: lumirelle/workflows/.github/workflows/ci.yml@v10
+    with:
+      cache-preset: 'mise-task,nub'
+      test: ''

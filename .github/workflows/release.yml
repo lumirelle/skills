@@ -1,0 +1,18 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions: {}
+
+jobs:
+  release:
+    uses: lumirelle/workflows/.github/workflows/release.yml@v10
+    permissions:
+      contents: write
+      id-token: write
+    with:
+      cache-preset: 'mise-task,nub'
+      build: ''
+      publish: ''

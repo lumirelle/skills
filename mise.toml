@@ -41,3 +41,13 @@ hk fix {{ "--staged" if usage.staged else "--all" }} {{ usage.rest | join(sep=' 
 [tasks.start]
 description = 'Run CLI.'
 run = 'nub scripts/cli.ts'
+
+[tasks.prerelease]
+description = 'Prepare for release.'
+run = { task = "check" }
+
+[tasks.release]
+description = 'Bump the version and push new version of this workflow with a Git tag.'
+depends = "prerelease"
+run = "bumpp"
+raw = true

@@ -1,5 +1,7 @@
 {
+  "name": "@lumirelle/skills",
   "type": "module",
+  "version": "0.0.0",
   "private": true,
   "packageManager": "nub@0.9.6",
   "devDependencies": {
@@ -8,6 +10,7 @@
     "@lumirelle/oxlint-config": "^0.14.0",
     "@lumirelle/tsconfig": "^0.1.6",
     "@types/node": "^26.6.4",
+    "bumpp": "^12.3.0",
     "eslint": "^10.12.0",
     "eslint-plugin-oxlint": "^1.86.0",
     "oxlint": "^1.87.0",

@@ -245,24 +245,39 @@ the user to verify again.
 
 Print the exact commands. **Ask before running them.**
 
-One commit per manager, matching the report's grouping, plus one exclusive commit
-per fix:
+**Commit in the order the run made the changes.** History written the other way puts a
+fix in front of the bump that broke the flow, and buries the config under the work it
+configured:
 
-**Stage the manifest and lockfile paths the run modified — tracked or newly created —
-and nothing else.** The report's tables give you the items; the run's diff gives you the
-files. Installed artifacts that `refresh` produced — `node_modules/`, a `bin/`, a build
-output directory — are build output, not commits. Most repos gitignore them; a run that
-commits them has committed its own scratch space.
+1. **The config commit, when step 1 generated `.justbump/managers.json`.** It comes
+   first — every later commit's commands came out of that file. A correction to a file
+   *generated this run* stays in this commit; a correction to one that already existed
+   is a fix and rides its own fix commit (3).
+2. **One commit per manager, in the `managers` array order** — the order the report
+   groups by, because that is the order the run bumped them.
+3. **One commit per fix, after the manager it repairs.** A fix to a bump or refresh
+   command, or to the code a bump broke, is the *result* of that manager's commit, not
+   its precondition: committed first, it reads as a fix for a breakage its own revision
+   does not yet contain, and the manager's bump stops being the whole story of its own
+   files. Fix commits follow the repo's own commit convention.
+
+**Stage the paths the run modified — tracked or newly created — and nothing else.** The
+config commit takes `.justbump/managers.json`; a manager commit takes that manager's
+manifest and lockfile paths; a fix commit takes the files the fix touched. The report's
+tables give you the items; the run's diff gives you the files. Installed artifacts that
+`refresh` produced — `node_modules/`, a `bin/`, a build output directory — are build
+output, not commits. Most repos gitignore them; a run that commits them has committed
+its own scratch space.
 
 ```
+chore(justbump): add the manager config
 chore(deps): bump mise tools
 chore(deps): bump node deps
 fix(deps): drop the stale --frozen-lockfile from the nub refresh
 ```
 
 Per-manager commits make `git revert <sha>` a precise undo when one manager's bump
-turns out to be what broke the flow. Fix commits follow the repo's own commit
-convention.
+turns out to be what broke the flow.
 
 ## Rollback
 
@@ -271,7 +286,8 @@ clean-tracked-tree precondition in step 2 is what makes this exact. Ask before d
 
 **Leave `.justbump/managers.json` alone.** A command correction found during the run is
 a fix to keep, not state to undo — reverting it only reproduces the same failure next
-run. Its diff stays visible, and it belongs in the fix commit from step 7.
+run. Its diff stays visible, and step 7 places it: with the config commit when step 1
+generated the file, in a fix commit when the file already existed.
 
 Any pre-existing untracked file the run changed cannot be restored; say so explicitly
 rather than presenting the rollback as complete.

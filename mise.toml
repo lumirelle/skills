@@ -51,3 +51,7 @@ description = 'Bump the version and push new version of this workflow with a Git
 depends = "prerelease"
 run = "bumpp"
 raw = true
+
+[tasks.changelog]
+description = 'Generate GitHub changelog.'
+run = 'changelogithub'

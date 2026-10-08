@@ -96,8 +96,8 @@ whether to roll back, exclude that dependency, or take your description of the p
 
 ## The config file
 
-`.justbump/managers.json` records your managers and the exact command for each job. It is
-generated once, confirmed by you, and **committed** — it's project configuration, not
+`.justbump/managers.json` records your managers and the exact commands each job runs. It
+is generated once, confirmed by you, and **committed** — it's project configuration, not
 machine state. Every command in it is what will actually run; there is nothing the agent
 expands at runtime.
 
@@ -116,6 +116,9 @@ regenerate.
 - **Never run your main flow.** That verification is yours; the agent only *reproduces* a
   failure you report.
 - **Never commit without asking.**
+- **Never assume a shell.** Every recorded command is one step that runs unchanged in
+  bash, `cmd` and PowerShell — no `rm -rf`, no `&&`, no per-OS variant for a mixed-OS
+  team to hand-edit.
 
 ## Known limitations
 
@@ -126,9 +129,6 @@ regenerate.
   `dotnet add package` works one package at a time.
 - **Yarn berry has no non-interactive outdated listing**, so Yarn projects need `taze`
   declared for justbump to check anything.
-- **Windows:** the Node lane's refresh uses `rm -rf node_modules`. Edit your committed
-  config to `Remove-Item -Recurse -Force node_modules` — the recorded command is the one
-  that runs.
 
 ## Adding a manager it doesn't know
 

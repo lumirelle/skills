@@ -60,7 +60,9 @@ If the file does not exist, generate it:
    four-mode Node lane only if `package.json` already declares taze; otherwise it gets
    its native lane, whose key count comes from
    [references/managers.md](references/managers.md) — one key for `npm`, all four for
-   classic Yarn. Schema in [references/schema.md](references/schema.md).
+   classic Yarn. `refresh` is written as an array of steps, one command each — the file
+   is committed and shared, and no chained one-liner survives both POSIX shells and
+   Windows. Schema in [references/schema.md](references/schema.md).
 3. **Show the user what you detected and wait.** List the supported and unsupported
    managers separately. This is the one gate where a wrong detection is cheap to fix
    and a wrong command is not.
@@ -117,9 +119,9 @@ degrade to `default` becomes visible *before* the run instead of in the report.
 ## Step 3 — bump
 
 **Skip a manager whose `check` reported nothing to change.** No bump to make means no
-`refresh` either — and the Node lane's `refresh` is `rm -rf node_modules && …`, which
-would churn the tree and possibly touch the lockfile for zero version movement. Report
-that manager as `unchanged` and move on. A mode the manager cannot express is *not* a
+`refresh` either — and the Node lane's `refresh` deletes `node_modules` and reinstalls,
+which would churn the tree and possibly touch the lockfile for zero version movement.
+Report that manager as `unchanged` and move on. A mode the manager cannot express is *not* a
 reason to skip it; that is `degrade`, and it still runs.
 
 Run each manager's recorded `bump` command for the requested mode. **What runs is what
@@ -129,6 +131,11 @@ Then run `refresh` where the record has one. Its job is that **the verification 
 step 5 exercises the bumped versions**: a `bump` that only edits the manifest leaves
 the lockfile and `node_modules` on the old versions, and a check run against those
 proves nothing. Records omit `refresh` where `bump` already settles the tree.
+
+`refresh` is an **ordered array of steps**. Run them in order and stop at the first
+failure — a step that failed is the thing to fix, and the steps after it would only
+run against a half-refreshed tree. Each element is one command, already written out:
+nothing to chain and nothing to expand.
 
 ### After each manager — sweep for stale references
 

@@ -123,26 +123,35 @@ writes `package.json` **and nothing else** — taze is not a package manager, an
 
 Because taze stops at the manifest, the lockfile and `node_modules` are left on the
 old versions. Upgrade against an empty tree rather than whatever the last install
-hoisted:
+hoisted — as **three recorded steps**, not one chained command: delete, install, dedupe.
 
-```
-rm -rf node_modules && <pm> install && <pm> dedupe
-```
-
-| Manager | `detect` | check | `refresh` |
+| Manager | `detect` | check | `refresh` steps |
 |---|---|---|---|
-| `nub` | `nub.lock`, `packageManager=nub` | `nub outdated --json` | `rm -rf node_modules && nub install && nub dedupe` |
-| `pnpm` | `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `packageManager=pnpm` | `pnpm outdated` | `rm -rf node_modules && pnpm install && pnpm dedupe` |
-| `npm` | `package-lock.json`, `packageManager=npm` | `npm outdated --json` | `rm -rf node_modules && npm install && npm dedupe` |
-| `bun` | `bun.lock`, `bun.lockb`, `packageManager=bun` | `bun outdated` | `rm -rf node_modules && bun install && bun dedupe` |
-| `yarn` | `yarn.lock` | **berry has none** — verified: `yarn outdated` → *Couldn't find a script named 'outdated'*, and the only upgrade commands are `yarn up` and the interactive `yarn upgrade-interactive`. Classic: `yarn outdated --json` (verified) | berry: `rm -rf node_modules && yarn install && yarn dedupe`; classic: `rm -rf node_modules && yarn install` (classic has no `dedupe`) |
+| `nub` | `nub.lock`, `packageManager=nub` | `nub outdated --json` | `<delete>`, `nub install`, `nub dedupe` |
+| `pnpm` | `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `packageManager=pnpm` | `pnpm outdated` | `<delete>`, `pnpm install`, `pnpm dedupe` |
+| `npm` | `package-lock.json`, `packageManager=npm` | `npm outdated --json` | `<delete>`, `npm install`, `npm dedupe` |
+| `bun` | `bun.lock`, `bun.lockb`, `packageManager=bun` | `bun outdated` | `<delete>`, `bun install`, `bun dedupe` |
+| `yarn` | `yarn.lock` | **berry has none** — verified: `yarn outdated` → *Couldn't find a script named 'outdated'*, and the only upgrade commands are `yarn up` and the interactive `yarn upgrade-interactive`. Classic: `yarn outdated --json` (verified) | berry: `<delete>`, `yarn install`, `yarn dedupe`; classic: `<delete>`, `yarn install` (classic has no `dedupe`) |
 
 `dedupe` availability is decided at generation time — probe it rather than assuming,
 and record the fallback as a bare `<pm> install` when the manager has no `dedupe`.
 
-**`rm -rf node_modules` is POSIX.** On Windows the equivalent is
-`Remove-Item -Recurse -Force node_modules`. The config is committed and shared, so a
-mixed-OS team must edit their copy — the recorded command is the one that runs.
+**`<delete>` is the lane's runtime, not a shell command.** `rm -rf` is POSIX-only and
+`Remove-Item -Recurse -Force node_modules` is PowerShell-only, so either spelling
+breaks half the machines a committed config gets read on. Chaining breaks them too:
+`&&` is a syntax error in Windows PowerShell 5.1, and `;` is not a separator in
+`cmd`. One command, no chaining, one spelling everywhere:
+
+```
+node --input-type=commonjs -e "require('fs').rmSync('node_modules',{recursive:true,force:true})"
+bun -e "require('fs').rmSync('node_modules',{recursive:true,force:true})"
+```
+
+The first is for `nub`, `pnpm`, `npm` and `yarn`; the second for `bun` (verified,
+1.4.2 — `bun -e` is a real eval and takes `require` even in a `type: module`
+package). Node's form is verified on v26.10.0; `--input-type=commonjs` keeps
+`require` available whatever the package's `type` field says. Every lane already has
+its runtime on `PATH`, so the delete adds no dependency the lane did not have.
 
 ### Managers that do not need `refresh`
 

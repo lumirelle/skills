@@ -11,7 +11,7 @@ the only place a run's commands come from. Which commands belong in it is
 
 ```jsonc
 {
-  "version": 2,
+  "version": 3,
   // Shown to the user in step 5. Free text; the agent never runs it.
   "verify": "run `mise run check` and confirm the CLI still starts",
   "managers": [
@@ -41,7 +41,11 @@ the only place a run's commands come from. Which commands belong in it is
           "minor": "nub exec taze minor -w --no-interactive --no-node-version --no-github-actions",
           "major": "nub exec taze major -w --no-interactive --no-node-version --no-github-actions"
         },
-        "refresh": "rm -rf node_modules && nub install && nub dedupe"
+        "refresh": [
+          "node --input-type=commonjs -e \"require('fs').rmSync('node_modules',{recursive:true,force:true})\"",
+          "nub install",
+          "nub dedupe"
+        ]
       }
     }
   ]
@@ -53,7 +57,7 @@ the degradation. Nothing else in the file encodes it.
 
 | Field | Meaning |
 |---|---|
-| `version` | Schema version. Currently `2`. **A mismatch with what the skill expects means regenerate, not migrate** — an older file's `bump` map means something different from what this schema describes. |
+| `version` | Schema version. Currently `3`. **A mismatch with what the skill expects means regenerate, not migrate** — an older file's `bump` map means something different from what this schema describes. |
 | `verify` | Reminder text shown to the user after the run. **The agent never runs it** — the user runs the main flow. Step 6 may reproduce a failure, but that is diagnosis of a break, not this verification. |
 | `managers` | Ordered array; a `name` appears at most once. Order is the order the report and the commits use. |
 | `kind` | `toolchain` or `package`. |
@@ -62,11 +66,19 @@ the degradation. Nothing else in the file encodes it.
 | `note` | Optional free text. Explains an unsupported record, a project-scoping flag that looks redundant but is not, or anything else the user should see in the plan. |
 | `commands.check` | Read-only. Used to build the report and to detect an already-current tree. |
 | `commands.bump` | **The commands that actually run.** Mode-keyed: `default` is required, and **a missing key is the degradation** — the manager has no such lane. There is no override field and nothing to expand at run time. |
-| `commands.refresh` | **Include only when `bump` leaves the resolved state stale.** Makes the installed tree agree with the manifest, so that the user's verification exercises the bumped versions rather than the old ones. Omit it where `bump` already settles the tree. |
+| `commands.refresh` | **Include only when `bump` leaves the resolved state stale.** An ordered array of steps — one command per element, run in order, stopping at the first failure. Steps rather than one chained line because shells disagree: `&&` is a syntax error in Windows PowerShell 5.1 and `;` is not a separator in `cmd`, so a chained one-liner cannot be committed and shared. Makes the installed tree agree with the manifest, so that the user's verification exercises the bumped versions rather than the old ones. Omit it where `bump` already settles the tree. |
 
 **Every command must be scoped to the project.** Where a tool defaults to
 machine-wide behaviour, pass its scoping flag — `mise --local` is the example that
 matters most in practice. A bump of this project must not reach outside it.
+
+**Every command must run unchanged in bash, `cmd` and PowerShell.** One command per
+step, no chaining, no shell-specific spelling — `rm -rf`, `Remove-Item` and `&&` each
+work on only part of the machines that read this file. Where a step needs to do
+something the shell would normally do, use the lane's own runtime:
+`node --input-type=commonjs -e "require('fs').rmSync('node_modules',{recursive:true,force:true})"`
+and its `bun -e` equivalent. See
+[managers.md](managers.md#the-node-lane-always-needs-refresh).
 
 Owned paths are deliberately **not** in the file. They are derived at run time from
 `git status --porcelain` before and after the run, which is what makes rollback

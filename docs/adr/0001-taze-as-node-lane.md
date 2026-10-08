@@ -40,9 +40,11 @@ degradation is reported rather than hidden.
 Node projects get a different lane from every other language. The recorded commands
 are verbose — four long, near-identical lines per Node manager — and that verbosity is
 the trade: every safety flag is visible, and `nub exec taze` (rather than a fetch, or
-"install taze") is a reviewed fact rather than a rule to recall. Schema `version` is
-2; a v1 file is regenerated rather than migrated, because v1's `bump` map means
-something different.
+"install taze") is a reviewed fact rather than a rule to recall. Schema `version` was
+2 when this decision was recorded; a v1 file is regenerated rather than migrated,
+because v1's `bump` map means something different.
+[ADR-0003](0003-shell-portable-refresh-steps.md) later moved `refresh` to
+shell-portable steps and `version` to 3.
 
 Sharpest consequence: taze is not safe to use for inspection. Its project config
 (`.tazerc.json` / a `taze` key in `package.json`) can set `"write": true`, which

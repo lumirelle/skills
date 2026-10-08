@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "verify": "run `mise run check`, then `mise run start check` to confirm the skills CLI still runs",
   "managers": [
     {
@@ -28,7 +28,11 @@
           "minor": "nub exec taze minor -w --no-interactive --no-node-version --no-github-actions",
           "major": "nub exec taze major -w --no-interactive --no-node-version --no-github-actions"
         },
-        "refresh": "rm -rf node_modules && nub install && nub dedupe"
+        "refresh": [
+          "node --input-type=commonjs -e \"require('fs').rmSync('node_modules',{recursive:true,force:true})\"",
+          "nub install",
+          "nub dedupe"
+        ]
       }
     }
   ]

@@ -1,7 +1,7 @@
 {
   "name": "@lumirelle/skills",
   "type": "module",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "packageManager": "nub@0.9.6",
   "devDependencies": {

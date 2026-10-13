@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "verify": "run `mise run check`, then `mise run start check` to confirm the skills CLI still runs",
   "managers": [
     {
@@ -23,10 +23,10 @@
       "commands": {
         "check": "nub outdated --json",
         "bump": {
-          "default": "nub exec taze -w --no-interactive --no-node-version --no-github-actions",
-          "patch": "nub exec taze patch -w --no-interactive --no-node-version --no-github-actions",
-          "minor": "nub exec taze minor -w --no-interactive --no-node-version --no-github-actions",
-          "major": "nub exec taze major -w --no-interactive --no-node-version --no-github-actions"
+          "default": "nub exec taze -x nub -w --no-interactive --no-node-version --no-github-actions",
+          "patch": "nub exec taze patch -x nub -w --no-interactive --no-node-version --no-github-actions",
+          "minor": "nub exec taze minor -x nub -w --no-interactive --no-node-version --no-github-actions",
+          "major": "nub exec taze major -x nub -w --no-interactive --no-node-version --no-github-actions"
         },
         "refresh": [
           "node --input-type=commonjs -e \"require('fs').rmSync('node_modules',{recursive:true,force:true})\"",

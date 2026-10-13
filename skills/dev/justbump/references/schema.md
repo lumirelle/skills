@@ -11,7 +11,7 @@ the only place a run's commands come from. Which commands belong in it is
 
 ```jsonc
 {
-  "version": 3,
+  "version": 4,
   // Shown to the user in step 5. Free text; the agent never runs it.
   "verify": "run `mise run check` and confirm the CLI still starts",
   "managers": [
@@ -36,10 +36,10 @@ the only place a run's commands come from. Which commands belong in it is
       "commands": {
         "check": "nub outdated --json",
         "bump": {
-          "default": "nub exec taze -w --no-interactive --no-node-version --no-github-actions",
-          "patch": "nub exec taze patch -w --no-interactive --no-node-version --no-github-actions",
-          "minor": "nub exec taze minor -w --no-interactive --no-node-version --no-github-actions",
-          "major": "nub exec taze major -w --no-interactive --no-node-version --no-github-actions"
+          "default": "nub exec taze -x nub -w --no-interactive --no-node-version --no-github-actions",
+          "patch": "nub exec taze patch -x nub -w --no-interactive --no-node-version --no-github-actions",
+          "minor": "nub exec taze minor -x nub -w --no-interactive --no-node-version --no-github-actions",
+          "major": "nub exec taze major -x nub -w --no-interactive --no-node-version --no-github-actions"
         },
         "refresh": [
           "node --input-type=commonjs -e \"require('fs').rmSync('node_modules',{recursive:true,force:true})\"",
@@ -57,7 +57,7 @@ the degradation. Nothing else in the file encodes it.
 
 | Field | Meaning |
 |---|---|
-| `version` | Schema version. Currently `3`. **A mismatch with what the skill expects means regenerate, not migrate** — an older file's `bump` map means something different from what this schema describes. |
+| `version` | Schema version. Currently `4`. **A mismatch with what the skill expects means regenerate, not migrate** — an older file's `bump` map means something different from what this schema describes. `3` → `4` because `3`'s `nub` lane omitted `-x nub`, and those commands rewrite a `nub` pin to the unrelated npm package of that name. |
 | `verify` | Reminder text shown to the user after the run. **The agent never runs it** — the user runs the main flow. Step 6 may reproduce a failure, but that is diagnosis of a break, not this verification. |
 | `managers` | Ordered array; a `name` appears at most once. Order is the order the report and the commits use. |
 | `kind` | `toolchain` or `package`. |

@@ -95,11 +95,19 @@ Only `taze` expresses all four modes, so **every Node package manager's recorded
 
 | Manager | `<runner>` — the declared binary | native lane |
 |---|---|---|
-| `nub` | `nub exec taze` | `nub update` / `nub update --latest` — `patch` and `minor` degrade |
+| `nub` | `nub exec taze -x nub` | `nub update` / `nub update --latest` — `patch` and `minor` degrade |
 | `pnpm` | `pnpm exec taze` | `pnpm update` / `pnpm update --latest` — `patch` and `minor` degrade |
 | `npm` | `npx taze` | `npm update` — **no wider lane**, verified: `npm update` has no `--latest` |
 | `yarn` | `yarn exec taze` | classic is **four-mode** (verified): `yarn upgrade` / `--latest --tilde` / `--latest --caret` / `--latest`; berry has only `yarn up` (default) |
 | `bun` | `bunx taze` | `bun update` / `bun update --latest` (both verified, 1.4.2) |
+
+`nub` carries one extra flag on every mode: `-x nub` (`--exclude nub`). The npm package
+named `nub` is **not** nubjs/nub — it is an unrelated package last published in 2014 at
+`1.0.0` — so a `package.json` that names `nub` would have taze resolve that entry and
+rewrite the pin to a different tool. nub itself is installed by the toolchain manager
+(`github:nubjs/nub`), never by the package manager, so nothing in `package.json` is
+ever a legitimate source for it. The flag is nub-specific: the `pnpm` / `npm` / `yarn`
+/ `bun` lanes do not take it.
 
 **taze is the engine only when the project already declares it** — in `dependencies`
 or `devDependencies` of `package.json`. That is the precondition for the Node lane,

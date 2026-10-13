@@ -85,8 +85,9 @@ with a `packageManager` field and its lockfile, `go.mod`, `Cargo.toml`, `uv.lock
    inline and disclosed in the report — you aren't asked about a missing flag.
 4. **Report.** One table per manager, `From` → `To`, plus anything it had to fix and every
    stale reference it updated or deliberately left alone.
-5. **Verify.** It tells you how to check the result and waits. **Running your main flow
-   is your job, not the agent's.**
+5. **Verify.** If toolchain tools moved, it tells you to start a fresh terminal first —
+   that shell is still holding the pre-bump `PATH` — then tells you how to check the
+   result and waits. **Running your main flow is your job, not the agent's.**
 6. **Commits.** It prints the commands and asks first. One commit per manager, and any
    fix gets its own commit — so `git revert` on one manager's bump undoes exactly that.
 

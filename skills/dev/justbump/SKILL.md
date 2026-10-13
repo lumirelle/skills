@@ -196,6 +196,28 @@ Before running any command the reference marks *unverified*, probe it with `--he
 first. `--help` is version-exact and offline; a web search can return a different
 release.
 
+### After the last manager — refresh the environment
+
+A bump changes *which binary a shell resolves*, and a shell resolves its `PATH` **when
+it starts**. Every command above ran in a shell that started before the bump, and the
+user's terminal is one of those shells — left alone, step 5 verifies the old tools
+against the new manifest and proves nothing.
+
+So before reporting:
+
+- **Re-resolve your own environment.** Drop the command hash (`hash -r` in bash and
+  zsh; nothing to do in `cmd` or PowerShell), and where the toolchain manager has a
+  reshim step (mise: `mise reshim`), run it so shims point at the new installs.
+- **Confirm, do not assume.** `command -v <tool>` and `<tool> --version` must show the
+  bumped version. If the inherited shell will not re-resolve, run the rest of the run
+  through a fresh process or the manager's own runner (`mise x -- <cmd>`), where the
+  environment is built from the current config.
+- **Tell the user about their terminal.** You cannot re-resolve it for them — say so
+  in step 5.
+
+This changes no file, so it has nothing to show in step 4 and nothing to roll back.
+It is what makes step 5's verification mean anything.
+
 ## Step 4 — report
 
 Group by manager: one heading per manager, one table under each. Summary first:
@@ -220,7 +242,14 @@ deliberately left alone. Never let a fix, or an untouched stale pin, hide in the
 ## Step 5 — hand back
 
 Tell the user how to check the result, using the config's `verify` text, then wait.
-**You do not run the main flow; the user does.** Take their answer:
+**You do not run the main flow; the user does.**
+
+If a toolchain manager was bumped, name the tools and tell the user to **start a new
+terminal — or re-run their shell's activation hook — before verifying**. Their shell
+resolved the pre-bump versions at startup, so the verification they run is otherwise
+reading the old `PATH`. Pass on anything your own re-resolution in step 3 turned up.
+
+Take their answer:
 
 1. **All correct** → step 7.
 2. **A manager is missing** → re-generate `.justbump/managers.json`, confirm it with
@@ -314,5 +343,10 @@ rather than presenting the rollback as complete.
 - **Never widen scope.** The mode is a ceiling the user asked for.
 - **One manager owns each version.** The recorded taze commands keep `node`-version
   and GitHub Actions handling off, so taze stays inside `package.json` and never
-  fights `mise` for `node`.
+  fights `mise` for `node`. Under `nub` they also pass `-x nub`: the registry package
+  named `nub` is not nubjs/nub — it is an unrelated 2014 package at `1.0.0` — so
+  without the exclusion taze would rewrite a `nub` pin to a different tool.
+- **Never let a pre-bump shell stand in for verification.** A shell resolves its `PATH`
+  at startup, so a bump made after that start is invisible to it. Re-resolve after the
+  run, and have the user start a fresh terminal before step 5.
 - **Do not commit without being asked.** Print the commands first.

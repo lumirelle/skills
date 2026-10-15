@@ -244,6 +244,12 @@ deliberately left alone. Never let a fix, or an untouched stale pin, hide in the
 Tell the user how to check the result, using the config's `verify` text, then wait.
 **You do not run the main flow; the user does.**
 
+**End the turn with plain text, and call no tool after it.** `ask_user_question` — or any
+other tool that blocks on an answer — takes the user's input line away from them, and
+that line is where verification happens: they need to type a command, like
+`! mise check` or `! mise run check`. Write what to run, then stop. The user's next
+message is the answer.
+
 If a toolchain manager was bumped, name the tools and tell the user to **start a new
 terminal — or re-run their shell's activation hook — before verifying**. Their shell
 resolved the pre-bump versions at startup, so the verification they run is otherwise
@@ -350,3 +356,6 @@ rather than presenting the rollback as complete.
   at startup, so a bump made after that start is invisible to it. Re-resolve after the
   run, and have the user start a fresh terminal before step 5.
 - **Do not commit without being asked.** Print the commands first.
+- **Hand back in plain text.** The request for verification is the end of the turn — no
+  `ask_user_question`, no tool call that holds the turn open. The user's reply is often a
+  command (`! mise run check`) typed into the input line a prompt would hide.

@@ -1,5 +1,5 @@
 # Sync Info
 
 - **Source:** `vendor/mattapocock/skills/engineering/domain-modeling`
-- **Git SHA:** `24fe0ef7737efae15c87225755e9f6f5965e4888`
-- **Synced:** 2026-10-04
+- **Git SHA:** `49dd158d1076134a641b33efb035946536778336`
+- **Synced:** 2026-10-15

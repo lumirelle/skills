@@ -1,5 +1,5 @@
 # Sync Info
 
 - **Source:** `vendor/anthropics/skills/skill-creator`
-- **Git SHA:** `8a1541c4a3ffa5a20a5a91de0dcf3f0bab1d1ef4`
-- **Synced:** 2026-10-04
+- **Git SHA:** `dbd4588f9e1033efb41dad4bef2f7947c8993d44`
+- **Synced:** 2026-10-15

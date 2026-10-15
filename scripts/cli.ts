@@ -26,6 +26,19 @@ function getGitSha(dir: string): string | null {
   return execSafe('git rev-parse HEAD', dir)
 }
 
+// Submodules sit in detached HEAD, where the upstream tracking ref (`@{u}`) does
+// not exist, so upstream is resolved from the remote's default branch instead.
+function getUpstreamRef(dir: string): string | null {
+  const symbolic = execSafe('git symbolic-ref --quiet refs/remotes/origin/HEAD', dir)
+  if (symbolic)
+    return symbolic
+
+  // origin/HEAD is only written at clone time; ask the remote when it is missing.
+  const lsRemote = execSafe('git ls-remote --symref origin HEAD', dir)
+  const match = lsRemote?.match(/^ref:\s+refs\/heads\/(\S+)\s+HEAD$/m)
+  return match ? `refs/remotes/origin/${match[1]}` : null
+}
+
 function submoduleExists(path: string): boolean {
   const gitmodules = join(root, '.gitmodules')
   if (!existsSync(gitmodules))
@@ -292,14 +305,24 @@ async function checkUpdates() {
 
   const updates: { name: string, type: string, behind: number }[] = []
 
+  const countBehind = (dir: string): number => {
+    const upstream = getUpstreamRef(dir)
+    if (!upstream) {
+      p.log.warn(`Could not resolve the upstream branch for ${dir}`)
+      return 0
+    }
+
+    const behind = execSafe(`git rev-list HEAD..${upstream} --count`, dir)
+    return behind ? Number.parseInt(behind) : 0
+  }
+
   // Check sources
   for (const name of Object.keys(submodules)) {
     const path = join(root, 'sources', name)
     if (!existsSync(path))
       continue
 
-    const behind = execSafe('git rev-list HEAD..@{u} --count', path)
-    const count = behind ? Number.parseInt(behind) : 0
+    const count = countBehind(path)
     if (count > 0) {
       updates.push({ name, type: 'source', behind: count })
     }
@@ -312,8 +335,7 @@ async function checkUpdates() {
     if (!existsSync(path))
       continue
 
-    const behind = execSafe('git rev-list HEAD..@{u} --count', path)
-    const count = behind ? Number.parseInt(behind) : 0
+    const count = countBehind(path)
     if (count > 0) {
       const skillNames = Object.values(vendorConfig.skills).join(', ')
       updates.push({ name: `${name} (${skillNames})`, type: 'vendor', behind: count })

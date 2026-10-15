@@ -1,10 +1,3 @@
--- File Associations
-vim.filetype.add({
-  pattern = {
-    [".*%.json"] = "jsonc",
-  },
-})
-
 -- Quality
 local eslint_support_filetypes = {
   -- Code

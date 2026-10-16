@@ -25,17 +25,29 @@ lockfile git is tracking.
 
 | Signal in the repo | Kind | Managers, in priority order |
 |---|---|---|
-| `mise.toml`, `mise.lock`, `.tool-versions` | toolchain | `mise` |
-| `package.json` | package | `nub` → `pnpm` → `npm` → `yarn` → `bun` |
+| `mise.toml`, `.mise.toml`, `mise.local.toml`, `.config/mise.toml`, `mise.lock`, `.tool-versions` | toolchain | `mise` |
+| `package.json`, `nub.lock`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `package-lock.json`, `yarn.lock`, `bun.lock`, `bun.lockb` | package | `nub` → `pnpm` → `npm` → `yarn` → `bun` |
 | `go.mod` | package | `go` |
 | `Cargo.toml` | package | `cargo` |
-| `pyproject.toml`, `uv.lock` | package | `uv` → `poetry` → `pip-tools` |
-| `Gemfile` | package | `bundler` |
-| `composer.json` | package | `composer` |
+| `pyproject.toml`, `uv.lock`, `poetry.lock`, `requirements.txt` + `requirements.in` | package | `uv` → `poetry` → `pip-tools` |
+| `Gemfile`, `Gemfile.lock` | package | `bundler` |
+| `composer.json`, `composer.lock` | package | `composer` |
 | `deno.json`, `deno.jsonc` | package | `deno` |
 | `mix.exs` | package | `mix` |
 | `*.csproj`, `*.sln` | package | `dotnet` |
 | `pom.xml`, `build.gradle*` | package | `maven` / `gradle` |
+
+**This table is the trigger set; a `detect` row is the record's re-check list.** Two
+files that detect the same ecosystem are one row, because the file alone does not name
+the manager: `package.json` does not say nub or pnpm, and `pyproject.toml` does not say
+uv or poetry. The per-manager tables then name the narrower signals, including content
+markers this table cannot hold — `packageManager=nub` inside `package.json`, `[tool.uv]`
+and `[tool.poetry]` inside `pyproject.toml`.
+
+The two lists are kept consistent in one direction: **every file a `detect` row names
+must appear here**, or a manager can be detected without being re-checked on the next run.
+The reverse does not hold — a bare `package.json` triggers the Node row long before any
+lockfile exists, which is what the priority order is for.
 
 A toolchain manager and a package manager coexist and both run — `mise` owns `node`
 the runtime, `nub` owns the packages `node` executes.
@@ -74,12 +86,27 @@ A manager with no row in this file — one the user supplied at the generation g
 **no native lane**. Nothing here describes its fallback, so a failure there is a stop
 and ask, never a guess.
 
-### Unverified commands
+### Probing before a first mutating use
 
-Two rows carry an unverified claim: `composer` and `mix`. They are documentation-derived
-rather than probed, so **try them with `<command> --help` before their first mutating
-use.** If `--help` disagrees, believe `--help` and report the correction; if it cannot
-answer, stop and ask.
+Two things are unprobed by construction: a manager the user supplied at the generation
+gate, and any command a later tool release has moved out from under the matrix. **Try
+either with the probe below before its first mutating use.** If the probe disagrees,
+believe the probe and report the correction; if it cannot answer, stop and ask.
+
+**The probe is `<command> --help`** — version-exact and offline, where a web search can
+return a different release. `mix` is the exception: mix tasks parse their own arguments
+and reject `--help` as an unknown option.
+
+```
+$ mix hex.outdated --help
+** (Mix) Could not invoke task "hex.outdated": 1 error found!
+--help : Unknown option
+```
+
+An agent that probes a `mix` row the ordinary way gets an error rather than a version
+check, so it must not read that error as "stop and ask". A `mix` row is probed with
+**`mix help <task>`**, which prints the task's own documentation — including the exit-code
+semantics below.
 
 ## The Node lane: taze
 
@@ -365,9 +392,10 @@ bump, so degrade and report.
 
 ### Non-Node managers
 
-Probed against installed tools on 2026-10-06. Where a cell says **unverified**, that
-specific claim could not be confirmed and must be probed with `--help` before its first
-mutating use.
+Probed against installed tools on 2026-10-06; `composer` and `mix` re-probed on 2026-10-16
+(Composer 2.10.3 on PHP 8.4.26, Mix 1.20.4 on OTP 29). Every cell below has been run. A
+tool that has since moved a flag is repaired like any other stale claim: probe it, believe
+the tool, report the correction.
 
 **The `bump` key set follows from these columns.** Unless a row says otherwise it is
 `default` plus at most one wider key, and a `—` in the wider column means `default`
@@ -380,20 +408,34 @@ Yarn's `--tilde` / `--caret`.
 | `cargo` | `Cargo.toml` | `cargo update --dry-run` | `cargo update` | `cargo update --breaking` (unstable flag) or `cargo upgrade --incompatible` (needs `cargo-edit`) | — |
 | `poetry` | `poetry.lock`, `[tool.poetry]` | `poetry show --outdated` | `poetry update` | edit the constraint, then `poetry update` | — |
 | `pip-tools` | `requirements.txt` + `requirements.in` | `pip-compile --dry-run --upgrade` | `pip-compile` | `pip-compile --upgrade` | `pip-sync` |
-| `bundler` | `Gemfile.lock` | `bundle outdated` | `bundle update --all` | `bundle update --all --patch` / `--minor` / `--major` | — |
+| `bundler` | `Gemfile`, `Gemfile.lock` | `bundle outdated` | `bundle update --all` | `bundle update --all --patch` / `--minor` / `--major` | — |
 | `deno` | `deno.json`, `deno.jsonc` | `deno outdated` | `deno outdated --update` | `deno outdated --update --latest` | — |
 | `dotnet` | `*.csproj`, `*.sln` | `dotnet list package --outdated` | `dotnet add package <id>` — **per package only**, there is no bulk bump | — | — |
 | `maven` | `pom.xml` | `mvn versions:display-dependency-updates` | `mvn versions:use-latest-releases` | — | — |
 | `gradle` | `build.gradle*` | `dependencyUpdates` is **not a built-in task** (verified: `gradle help --task dependencyUpdates` → not found); it needs the ben-manes plugin | — | — | — |
-| `composer` | `composer.lock` | `composer outdated` *(unverified)* | `composer update` *(unverified)* | edit the constraint *(unverified)* | — |
-| `mix` | `mix.exs` | `mix hex.outdated` *(unverified)* | `mix deps.update --all` *(unverified)* | edit the constraint in `mix.exs` *(unverified)* | — |
+| `composer` | `composer.json`, `composer.lock` | `composer outdated` | `composer update` | edit the constraint in `composer.json` | — |
+| `mix` | `mix.exs` | `mix hex.outdated` | `mix deps.update --all` | edit the constraint in `mix.exs` | — |
 
 **Bundler is a four-mode manager** — `--patch`, `--minor` and `--major` are real
 `bundle update` flags, which makes Ruby one of the few ecosystems where the fine modes
 work without taze.
 
-The *(unverified)* rows are documentation-derived rather than probed, and must be tried
-with `--help` before their first mutating use.
+**What the two re-probed rows showed.** `composer outdated` exits **0** even when there is
+something to update, so its exit code carries no signal — read the output, which splits
+direct from transitive and marks `~` for a major and `!` for a patch or minor.
+`mix hex.outdated` is the opposite: it exits **1** when anything is outdated, and
+`--within-requirements` narrows that to the updates `mix.exs` already allows, which is the
+`default`-mode gate itself.
+
+Composer's `--minor-only` / `--patch-only` live on `outdated`, never on `update`, so
+neither row carries a fine-mode key: in both, **the wider lane is a constraint edit,
+because neither tool has a flag that crosses the constraint.** `composer update` and
+`mix deps.update --all` each re-settle their own lockfile, which is why neither row needs
+a `refresh`.
+
+Do not reach for `composer bump`. It exists and means the opposite of this skill's bump:
+it raises the lower bounds in `composer.json` to the versions already installed. It never
+moves a package to a newer version.
 
 `cargo update` respects the semver requirement already in `Cargo.toml`, so it has no
 patch/minor distinction — for a `0.x` crate the requirement is the minor.

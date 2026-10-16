@@ -67,13 +67,15 @@ Detection is by file, never by what's installed on your machine:
 | .NET | `dotnet` | Per package only — there is no bulk bump |
 | JVM | `maven` | `default` plus one wider lane |
 | JVM | `gradle` | None. `dependencyUpdates` is *not* built in — it needs the ben-manes plugin |
-| PHP | `composer` | Unverified — see below |
-| Elixir | `mix` | Unverified — see below |
+| PHP | `composer` | `default` plus one wider lane — a constraint edit in `composer.json` |
+| Elixir | `mix` | `default` plus one wider lane — a constraint edit in `mix.exs` |
 
 Signals it looks for include `mise.toml` / `mise.lock` / `.tool-versions`, `package.json`
 with a `packageManager` field and its lockfile, `go.mod`, `Cargo.toml`, `uv.lock` /
 `pyproject.toml`, `requirements*.txt`, `Gemfile`, `deno.json`, `mix.exs`, `*.csproj`, `pom.xml`,
-`build.gradle*`, `composer.json`.
+`build.gradle*`, `composer.json`. That list is illustrative: the complete signal table, and
+the priority order that picks between managers sharing one signal, is
+[references/managers.md](references/managers.md#detection).
 
 ## How a run goes
 
@@ -123,9 +125,10 @@ regenerate.
 
 ## Known limitations
 
-- **PHP and Elixir are unverified.** `composer` and `mix` come from documentation rather
-  than a tool run, because PHP and Elixir couldn't be installed in the environment where
-  the skill was written. Their commands are probed with `--help` before first use.
+- **PHP and Elixir were probed, not read off their docs** — `composer` on Composer 2.10.3 /
+  PHP 8.4.26, and `mix` on Mix 1.20.4 / OTP 29, both on 2026-10-16. Mix is also the one
+  manager probed with `mix help <task>` rather than `<command> --help`: mix tasks reject
+  `--help` outright, so the ordinary probe looks like a broken command.
 - **Gradle and .NET** can't do a full bump — Gradle needs a third-party plugin, and
   `dotnet add package` works one package at a time.
 - **Yarn berry has no non-interactive outdated listing**, so Yarn projects need `taze`

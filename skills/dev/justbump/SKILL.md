@@ -197,9 +197,10 @@ its exit code.
 **Three attempts per manager.** If you cannot land it in three, stop and offer the
 user: roll back, exclude that manager, or describe the situation.
 
-Before running any command the reference marks *unverified*, probe it with `--help`
-first. `--help` is version-exact and offline; a web search can return a different
-release.
+Before running a command the reference marks *unverified* — one the user supplied, or a row
+a later tool release has moved — probe it first. `--help` is version-exact and offline; a
+web search can return a different release. **Mix is the exception:** mix tasks reject
+`--help` as an unknown option, so a `mix` row is probed with `mix help <task>`.
 
 ### After the last manager — refresh the environment
 

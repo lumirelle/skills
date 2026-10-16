@@ -2,46 +2,6 @@
 
 lockfile_version = 3
 
-[[tools."github:nubjs/nub"]]
-version = "0.9.6"
-backend = "github:nubjs/nub"
-specifiers = ["latest"]
-
-[tools."github:nubjs/nub"."platforms.linux-arm64"]
-checksum = "sha256:d8223f600726a97108e47f8e89730fb893d0c6a640f606c854ec3fe39591eaf7"
-url = "https://github.com/nubjs/nub/releases/download/v0.9.6/nub-linux-arm64.tar.gz"
-url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/602072790"
-
-[tools."github:nubjs/nub"."platforms.linux-arm64-musl"]
-checksum = "sha256:ea0026b1c7f2f5d14de927019a5faefc7161e3412ac45ca035346955322b08fa"
-url = "https://github.com/nubjs/nub/releases/download/v0.9.6/nub-linux-arm64-musl.tar.gz"
-url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/602072850"
-
-[tools."github:nubjs/nub"."platforms.linux-x64"]
-checksum = "sha256:77220dc6deb6ebbdb0a282c61b80a157e32016e088f3632d8fb4bf74a931e4ce"
-url = "https://github.com/nubjs/nub/releases/download/v0.9.6/nub-linux-x64.tar.gz"
-url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/602072619"
-
-[tools."github:nubjs/nub"."platforms.linux-x64-musl"]
-checksum = "sha256:506b59abcc7479d15cabe7c4d049b13caa6a9ffde37b569150637949dae4e822"
-url = "https://github.com/nubjs/nub/releases/download/v0.9.6/nub-linux-x64-musl.tar.gz"
-url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/602072724"
-
-[tools."github:nubjs/nub"."platforms.macos-arm64"]
-checksum = "sha256:d2526af860b79818c10e69fe75f8188670247a966c1441d33526b15677b2b508"
-url = "https://github.com/nubjs/nub/releases/download/v0.9.6/nub-darwin-arm64.tar.gz"
-url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/602072484"
-
-[tools."github:nubjs/nub"."platforms.macos-x64"]
-checksum = "sha256:653c81a5b9700421ccb3e91b7cb84cbcb7bdc02f73cd9cc5a5ec221d04b9e69f"
-url = "https://github.com/nubjs/nub/releases/download/v0.9.6/nub-darwin-x64.tar.gz"
-url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/602072548"
-
-[tools."github:nubjs/nub"."platforms.windows-x64"]
-checksum = "sha256:7dddb16975354d73e16c0e7168cc453738bb2c1c03f6a8d6690326e466ed7c6a"
-url = "https://github.com/nubjs/nub/releases/download/v0.9.6/nub-win32-x64.zip"
-url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/602072908"
-
 [[tools.hk]]
 version = "2.6.0"
 backend = "packslip:github.com/jdx/hk"
@@ -87,9 +47,8 @@ checksum = "sha256:ec53c915c3fdd8786c5685abd25ae3fe9fba0692307f9811d7caaadea1bca
 url = "https://nodejs.org/dist/v26.12.0/node-v26.12.0-linux-arm64.tar.gz"
 
 [tools.node."platforms.linux-arm64-musl"]
-checksum = "sha256:435d4e5b5e12e14819f2598710f0f637f2094b25232fdf0cc304b7c4eadeadbb"
-url = "https://nodejs.org/dist/v26.12.0/node-v26.12.0.tar.gz"
-install = "source"
+checksum = "sha256:2e70b6d5adbae94546c4d7e01de7b64c50bf8d3dbfaad2bb0774942e9da902b8"
+url = "https://unofficial-builds.nodejs.org/download/release/v26.12.0/node-v26.12.0-linux-arm64-musl.tar.gz"
 
 [tools.node."platforms.linux-x64"]
 checksum = "sha256:d9f88af72ad34f7ddf8e67289829f1698f54b6254f7d4f54b7453117ff1a3d2c"
@@ -110,6 +69,46 @@ url = "https://nodejs.org/dist/v26.12.0/node-v26.12.0-darwin-x64.tar.gz"
 [tools.node."platforms.windows-x64"]
 checksum = "sha256:50efaf01a08c520b4bbe499c09a8c5a5c370002c419c0d9da2c6815d3066a453"
 url = "https://nodejs.org/dist/v26.12.0/node-v26.12.0-win-x64.zip"
+
+[[tools.nub]]
+version = "0.9.6"
+backend = "github:nubjs/nub"
+specifiers = ["latest"]
+
+[tools.nub."platforms.linux-arm64"]
+checksum = "sha256:d8223f600726a97108e47f8e89730fb893d0c6a640f606c854ec3fe39591eaf7"
+url = "https://github.com/nubjs/nub/releases/download/v0.9.6/nub-linux-arm64.tar.gz"
+url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/602072790"
+
+[tools.nub."platforms.linux-arm64-musl"]
+checksum = "sha256:ea0026b1c7f2f5d14de927019a5faefc7161e3412ac45ca035346955322b08fa"
+url = "https://github.com/nubjs/nub/releases/download/v0.9.6/nub-linux-arm64-musl.tar.gz"
+url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/602072850"
+
+[tools.nub."platforms.linux-x64"]
+checksum = "sha256:77220dc6deb6ebbdb0a282c61b80a157e32016e088f3632d8fb4bf74a931e4ce"
+url = "https://github.com/nubjs/nub/releases/download/v0.9.6/nub-linux-x64.tar.gz"
+url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/602072619"
+
+[tools.nub."platforms.linux-x64-musl"]
+checksum = "sha256:506b59abcc7479d15cabe7c4d049b13caa6a9ffde37b569150637949dae4e822"
+url = "https://github.com/nubjs/nub/releases/download/v0.9.6/nub-linux-x64-musl.tar.gz"
+url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/602072724"
+
+[tools.nub."platforms.macos-arm64"]
+checksum = "sha256:d2526af860b79818c10e69fe75f8188670247a966c1441d33526b15677b2b508"
+url = "https://github.com/nubjs/nub/releases/download/v0.9.6/nub-darwin-arm64.tar.gz"
+url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/602072484"
+
+[tools.nub."platforms.macos-x64"]
+checksum = "sha256:653c81a5b9700421ccb3e91b7cb84cbcb7bdc02f73cd9cc5a5ec221d04b9e69f"
+url = "https://github.com/nubjs/nub/releases/download/v0.9.6/nub-darwin-x64.tar.gz"
+url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/602072548"
+
+[tools.nub."platforms.windows-x64"]
+checksum = "sha256:7dddb16975354d73e16c0e7168cc453738bb2c1c03f6a8d6690326e466ed7c6a"
+url = "https://github.com/nubjs/nub/releases/download/v0.9.6/nub-win32-x64.zip"
+url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/602072908"
 
 [[tools.pkl]]
 version = "0.32.1"

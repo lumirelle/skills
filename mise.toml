@@ -3,7 +3,7 @@
 [tools]
 # Environments
 node = "latest"
-'github:nubjs/nub' = "latest"
+nub = "latest"
 # Quality
 hk = "latest"
 pkl = "latest"

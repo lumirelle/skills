@@ -131,7 +131,12 @@ writes `package.json` **and nothing else** — taze is not a package manager, an
 
 Because taze stops at the manifest, the lockfile and `node_modules` are left on the
 old versions. Upgrade against an empty tree rather than whatever the last install
-hoisted — as **three recorded steps**, not one chained command: delete, install, dedupe.
+hoisted — as **three recorded steps**, not one chained command: delete, install,
+dedupe. The delete takes `node_modules` **and the manager's lockfile**, because an
+install honours a lock entry whose specifier the bump did not rewrite: delete only the
+installed tree and `<pm> install` reinstalls the old resolution from the lock. The
+fresh resolution is still bounded by the ranges in the manifest — the ones the bump
+just wrote — so this re-resolves the tree rather than widening the bump.
 
 | Manager | `detect` | check | `refresh` steps |
 |---|---|---|---|
@@ -144,22 +149,33 @@ hoisted — as **three recorded steps**, not one chained command: delete, instal
 `dedupe` availability is decided at generation time — probe it rather than assuming,
 and record the fallback as a bare `<pm> install` when the manager has no `dedupe`.
 
-**`<delete>` is the lane's runtime, not a shell command.** `rm -rf` is POSIX-only and
-`Remove-Item -Recurse -Force node_modules` is PowerShell-only, so either spelling
-breaks half the machines a committed config gets read on. Chaining breaks them too:
-`&&` is a syntax error in Windows PowerShell 5.1, and `;` is not a separator in
-`cmd`. One command, no chaining, one spelling everywhere:
+**`<delete>` is the lane's runtime, not a shell command, and it names both paths.**
+`rm -rf` is POSIX-only and `Remove-Item -Recurse -Force` is PowerShell-only, so either
+spelling breaks half the machines a committed config gets read on. Chaining breaks
+them too: `&&` is a syntax error in Windows PowerShell 5.1, and `;` is not a
+separator in `cmd`. One command, no chaining, one spelling everywhere:
 
 ```
-node --input-type=commonjs -e "require('fs').rmSync('node_modules',{recursive:true,force:true})"
-bun -e "require('fs').rmSync('node_modules',{recursive:true,force:true})"
+node --input-type=commonjs -e "const fs=require('fs');for(const p of ['node_modules','<lockfile>'])fs.rmSync(p,{recursive:true,force:true})"
+bun -e "const fs=require('fs');for(const p of ['node_modules','bun.lock','bun.lockb'])fs.rmSync(p,{recursive:true,force:true})"
 ```
 
-The first is for `nub`, `pnpm`, `npm` and `yarn`; the second for `bun` (verified,
-1.4.2 — `bun -e` is a real eval and takes `require` even in a `type: module`
-package). Node's form is verified on v26.10.0; `--input-type=commonjs` keeps
-`require` available whatever the package's `type` field says. Every lane already has
-its runtime on `PATH`, so the delete adds no dependency the lane did not have.
+The first takes each manager's own lockfile:
+
+| Manager | the `<lockfile>` in the delete step |
+|---|---|
+| `nub` | `nub.lock` |
+| `pnpm` | `pnpm-lock.yaml` |
+| `npm` | `package-lock.json` |
+| `yarn` | `yarn.lock` |
+
+The second is for `bun` (verified, 1.4.2 — `bun -e` is a real eval and takes `require`
+even in a `type: module` package). It removes **both** `bun.lock` and the older
+`bun.lockb`: `bun install` migrates a `bun.lockb` into `bun.lock`, so a leftover
+`.lockb` would seed the resolution just as a lockfile would. Node's form is verified on
+v26.10.0; `--input-type=commonjs` keeps `require` available whatever the package's
+`type` field says. Every lane already has its runtime on `PATH`, so the delete adds no
+dependency the lane did not have.
 
 ### Managers that do not need `refresh`
 

@@ -56,3 +56,5 @@ future step that deletes, copies or moves something uses the lane's runtime, not
 shell. That generalises to the rule in
 [`references/schema.md`](../../skills/dev/justbump/references/schema.md): a recorded
 command must run unchanged in bash, `cmd` and PowerShell.
+[ADR-0004](0004-refresh-deletes-the-lockfile.md) later extended the deletion step from
+`node_modules` to the manager's lockfile as well.

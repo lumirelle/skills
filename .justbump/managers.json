@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "verify": "run `mise run check`, then `mise run start check` to confirm the skills CLI still runs",
   "managers": [
     {
@@ -29,7 +29,7 @@
           "major": "nub exec taze major -x nub -w --no-interactive --no-node-version --no-github-actions"
         },
         "refresh": [
-          "node --input-type=commonjs -e \"require('fs').rmSync('node_modules',{recursive:true,force:true})\"",
+          "node --input-type=commonjs -e \"const fs=require('fs');for(const p of ['node_modules','nub.lock'])fs.rmSync(p,{recursive:true,force:true})\"",
           "nub install",
           "nub dedupe"
         ]

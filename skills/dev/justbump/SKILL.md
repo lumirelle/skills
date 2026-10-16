@@ -119,8 +119,8 @@ degrade to `default` becomes visible *before* the run instead of in the report.
 ## Step 3 — bump
 
 **Skip a manager whose `check` reported nothing to change.** No bump to make means no
-`refresh` either — and the Node lane's `refresh` deletes `node_modules` and reinstalls,
-which would churn the tree and possibly touch the lockfile for zero version movement.
+`refresh` either — and the Node lane's `refresh` deletes `node_modules` and the lockfile
+and re-resolves the tree, which would churn it for zero version movement.
 Report that manager as `unchanged` and move on. A mode the manager cannot express is *not* a
 reason to skip it; that is `degrade`, and it still runs.
 
@@ -131,6 +131,11 @@ Then run `refresh` where the record has one. Its job is that **the verification 
 step 5 exercises the bumped versions**: a `bump` that only edits the manifest leaves
 the lockfile and `node_modules` on the old versions, and a check run against those
 proves nothing. Records omit `refresh` where `bump` already settles the tree.
+
+The Node lane's delete step removes `node_modules` **and the lockfile**. The lockfile is
+what re-pins a resolution, so one left behind makes `install` reinstate every dependency
+whose specifier the bump did not rewrite — the refresh would verify the old tree. That is
+not a widened mode: the fresh resolution stays inside the ranges the bump just wrote.
 
 `refresh` is an **ordered array of steps**. Run them in order and stop at the first
 failure — a step that failed is the thing to fix, and the steps after it would only

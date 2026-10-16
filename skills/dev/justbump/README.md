@@ -11,15 +11,13 @@ reports what changed grouped by manager, and then gets out of the way while you 
 
 Keeping a project's pins fresh is mechanical work: the same commands, in the same order,
 against however many managers the repo happens to use. Doing it by hand is slow and easy
-to do half-way, so it gets postponed — which is the job an agent should simply take over.
+to do half-way, so it gets annoyed — which is the job an agent should simply take over.
 justbump hands the agent the per-manager commands and the order to run them, so the
-whole pass costs one invocation instead of an afternoon of typing.
+whole pass costs one invocation.
 
 The other obvious answer is Renovate or Dependabot, and that trade is deliberate: they
 run on *their* schedule. The bot decides when to open PRs, and you get a standing queue of
-dependency updates you didn't ask for — every one of them needing review before it can be
-merged or dismissed. justbump inverts that. Nothing runs until you say so, and one run
-bumps everything at once instead of dripping PRs at you.
+dependency updates you didn't ask for. justbump inverts that:
 
 **You decide when. The agent does the work.**
 
@@ -52,8 +50,6 @@ Bare `justbump` means `default`. Only some managers can express the fine modes, 
 the report tells you.
 
 ## Supported managers
-
-Detection is by file, never by what's installed on your machine:
 
 | Ecosystem | Managers | Modes it can express |
 |---|---|---|
@@ -125,10 +121,6 @@ regenerate.
 
 ## Known limitations
 
-- **PHP and Elixir were probed, not read off their docs** — `composer` on Composer 2.10.3 /
-  PHP 8.4.26, and `mix` on Mix 1.20.4 / OTP 29, both on 2026-10-16. Mix is also the one
-  manager probed with `mix help <task>` rather than `<command> --help`: mix tasks reject
-  `--help` outright, so the ordinary probe looks like a broken command.
 - **Gradle and .NET** can't do a full bump — Gradle needs a third-party plugin, and
   `dotnet add package` works one package at a time.
 - **Yarn berry has no non-interactive outdated listing**, so Yarn projects need `taze`

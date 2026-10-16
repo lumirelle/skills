@@ -132,7 +132,7 @@ Only `taze` expresses all four modes, so **every Node package manager's recorded
 named `nub` is **not** nubjs/nub — it is an unrelated package last published in 2014 at
 `1.0.0` — so a `package.json` that names `nub` would have taze resolve that entry and
 rewrite the pin to a different tool. nub itself is installed by the toolchain manager
-(`github:nubjs/nub`), never by the package manager, so nothing in `package.json` is
+(`github:nubjs/nub` or `nub`), never by the package manager, so nothing in `package.json` is
 ever a legitimate source for it. The flag is nub-specific: the `pnpm` / `npm` / `yarn`
 / `bun` lanes do not take it.
 
@@ -269,7 +269,7 @@ report it, and stop rather than guessing.
 
 ## Stale references
 
-A manager owns its own files; it does not own every copy of a version. `hk` is pinned
+A manager owns its own files; it does not own every copy of a version. For example, `hk` is pinned
 in `mise.toml` / `mise.lock` **and** as a schema URL in `hk.pkl`:
 
 ```
@@ -279,6 +279,17 @@ amends "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pk
 Bump `hk` and the first copy moves while the second keeps validating against 2.4.0 —
 and `hk validate` still passes, because the old release is still downloadable. The
 main flow cannot see this drift, so the sweep in step 3 has to.
+
+Another example is some deploy configuration may hard-code the runtime version, like `netlify.toml`:
+
+```toml
+[build.environment]
+NODE_VERSION = "26.12.0"
+```
+
+Bump `node` (dev engine) does not change build time `node` version. Runtime version mismatch between
+dev-time & build-time may cause strange problem, the main flow cannot see this drift, so the sweep in
+step 3 has to.
 
 ### Where hard-coded versions live
 

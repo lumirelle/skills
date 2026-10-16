@@ -6,7 +6,7 @@ description: >-
   Use when the user says "justbump", asks to bump/update/upgrade the project's
   dependencies or tool versions, or names a mode (patch, minor, major; bare
   means default). Not for a single dependency, a first-time install, or project
-  setup — that's the `mise` skill.
+  setup.
 ---
 
 # justbump
@@ -147,17 +147,24 @@ nothing to chain and nothing to expand.
 Sweep per manager, right after its bump, so a found reference lands in that manager's
 commit instead of floating loose.
 
-A manager does not own every copy of a version. `hk` is pinned in `mise.toml` **and**
+A manager does not own every copy of a version, for example, `hk` is pinned in `mise.toml` **and**
 in `hk.pkl`, as a versioned schema URL that another tool reads:
 
 ```
 amends "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl"
 ```
 
+And some deploy configuration may hard-code the runtime version, like `netlify.toml`:
+
+```toml
+[build.environment]
+NODE_VERSION = "26.12.0"
+```
+
 The bump updates the first copy and never sees the second. So for every item `check`
 reported as changing, search the repo for its **old** version:
 
-- Exclude `.git`, `node_modules`, `vendor/`, `sources/`, and build output — and
+- Exclude `.git`, `node_modules`, Git submodule, and build output — and
   **every lockfile**. The manager already rewrote its own; a hit in one is a different
   package, or a `refresh` that did not happen.
 - Search the decorated forms too: `2.4.0`, `v2.4.0`, `hk@2.4.0`.

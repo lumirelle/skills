@@ -1,5 +1,8 @@
 # Lumirelle's Skills
 
+> [!Note]
+> This project is forked from and inspired by [antfu/skills](https://github.com/antfu/skills) by [Anthony Fu](https://github.com/antfu). See [thanks](#thanks) for more details.
+
 A curated collection of [Agent Skills](https://agentskills.io/home) reflecting [Lumirelle](https://github.com/lumirelle)'s preferences, experience, and best practices, along with usage documentation for the tools.
 
 > [!IMPORTANT]

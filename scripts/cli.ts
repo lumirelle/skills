@@ -290,8 +290,61 @@ async function syncSubmodules() {
   p.log.success('All skills synced')
 }
 
+const MARKETPLACE_MANIFEST_REL = '.claude-plugin/marketplace.json'
+const MARKETPLACE_MANIFEST = join(root, MARKETPLACE_MANIFEST_REL)
+
+interface MarketplaceManifest {
+  plugins?: { name?: string, skills?: string[] }[]
+}
+
+// The manifest drives the installer's grouping and fails silently by design: a path that
+// no longer resolves drops its skill into the CLI's `Other` bucket without an error. Only
+// the listed-to-missing direction is checkable - a skill absent from the manifest is a
+// deliberate "install it per project" decision, not a defect.
+function checkMarketplacePlugins(): string[] {
+  if (!existsSync(MARKETPLACE_MANIFEST))
+    return [`${MARKETPLACE_MANIFEST_REL} is missing, so the installer shows one flat list`]
+
+  let manifest: MarketplaceManifest
+  try {
+    manifest = JSON.parse(readFileSync(MARKETPLACE_MANIFEST, 'utf-8'))
+  }
+  catch (e: any) {
+    return [`${MARKETPLACE_MANIFEST_REL} is not valid JSON: ${e.message}`]
+  }
+
+  const problems: string[] = []
+  for (const plugin of manifest.plugins ?? []) {
+    for (const skillPath of plugin.skills ?? []) {
+      // The CLI skips any path that does not start with './', quietly losing the grouping.
+      if (!skillPath.startsWith('./')) {
+        problems.push(`${plugin.name ?? '(unnamed plugin)'}: ${skillPath} must start with './'`)
+        continue
+      }
+      if (!existsSync(join(root, skillPath, 'SKILL.md')))
+        problems.push(`${plugin.name ?? '(unnamed plugin)'}: ${skillPath} has no SKILL.md`)
+    }
+  }
+
+  return problems
+}
+
 async function checkUpdates() {
   const spinner = p.spinner()
+
+  // Local and offline, so it runs before the fetch: a failed fetch must not hide it.
+  const manifestProblems = checkMarketplacePlugins()
+  if (manifestProblems.length > 0) {
+    process.exitCode = 1
+    p.log.error('Install grouping is broken:')
+    for (const problem of manifestProblems) {
+      p.log.message(`  - ${problem}`)
+    }
+  }
+  else {
+    p.log.success('Install grouping paths all resolve')
+  }
+
   spinner.start('Fetching remote changes...')
 
   try {

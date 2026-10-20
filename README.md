@@ -110,7 +110,7 @@ Synced from external repositories that maintain their own skills. See [`meta.ts`
 
 ### What Makes This Collection Different?
 
-Skills are grouped by scope under `skills/` (`agent/`, `doc/`, `design/`, `dev/`, `starup/`, `external-tool/`), so you can install only what you need.
+`skills/` is this repo's own source layout (`agent/`, `doc/`, `design/`, `dev/`, `starup/`, `external-tool/`), which is not what the installer shows: the few skills worth having in every session are declared in [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) and listed as **Global**, every other skill falls to **Other** (`General` under `--list`) to be installed per project - and `-g` still decides where a skill actually lands.
 
 Sources are tracked as git submodules under `vendor/` (for repositories that maintain their own skills) and `sources/` (for repositories we generate skills from). Pinning a submodule gives reliable, reproducible context and lets the skills stay up-to-date with upstream changes, since the exact commit each skill was synced from is recorded.
 

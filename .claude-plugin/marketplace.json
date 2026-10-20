@@ -5,26 +5,19 @@
     "url": "https://github.com/lumirelle"
   },
   "metadata": {
-    "description": "Grouping for `skills add lumirelle/skills`: skills worth having in every session are listed under `global`, everything else falls to the CLI's `Other` bucket."
+    "description": "Grouping for `skills add lumirelle/skills`: skills meant to live on your machine only are listed under `private`, everything else falls to the CLI's `Other` bucket so it gets installed and configured per project."
   },
   "plugins": [
     {
-      "name": "global",
+      "name": "private",
       "source": "./",
-      "description": "Skills with no dependency on the repo you happen to be in: skill meta-work, session-level operations, and document or visual output.",
+      "description": "Private skills: install once on this machine, share with nobody. They act on the person, not on the repo you happen to be in, so they are never part of a project's shared tooling.",
       "skills": [
         "./skills/agent/find-skills",
-        "./skills/agent/handoff",
-        "./skills/agent/skill-creator",
-        "./skills/agent/writing-for-agents",
         "./skills/design/canvas-design",
         "./skills/design/theme-factory",
-        "./skills/dev/wizard",
         "./skills/doc/doc-coauthoring",
-        "./skills/doc/internal-comms",
-        "./skills/doc/research",
-        "./skills/doc/retro",
-        "./skills/doc/to-questionnaire"
+        "./skills/doc/internal-comms"
       ]
     }
   ]

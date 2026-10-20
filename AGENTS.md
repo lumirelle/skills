@@ -64,7 +64,7 @@ You don't need to do anything about them unless being asked.
 │           └── {skill-name}/   # Individual skills to sync
 │
 ├── .claude-plugin/
-│   └── marketplace.json        # Install grouping: the `global` plugin lists skills worth having in every session
+│   └── marketplace.json        # Install grouping: the `private` plugin lists machine-only skills; everything else installs per project
 │
 └── skills/                     # Output directory
     └── {category}/             # agent | doc | design | dev | starup | external-tool
@@ -78,7 +78,7 @@ You don't need to do anything about them unless being asked.
 
 **Important:** For Type 1 (generated), the `skills/{project}/` name must match `sources/{project}/`. For Type 2 (synced), the output name is configured in `meta.ts` and may differ from the source skill name.
 
-`marketplace.json` only drives what the `skills` CLI displays at install time, and it fails silently: unlisted skills fall into the CLI's `Other` bucket, which is the intended default for anything that needs a project to act on. Renaming or removing a skill therefore needs its path pruned from the manifest, and `mise run start check` reports any listed path that no longer resolves.
+`marketplace.json` only drives what the `skills` CLI displays at install time, and it fails silently: unlisted skills fall into the CLI's `Other` bucket, which is the intended default for anything that has to be installed and configured per project before it is shared with others. Renaming or removing a skill therefore needs its path pruned from the manifest, and `mise run start check` reports any listed path that no longer resolves.
 
 ## Workflows
 

@@ -1,5 +1,9 @@
 # Install-time grouping is one `global` plugin
 
+> Superseded by [ADR-0006](0006-install-grouping-is-private.md): the plugin is now named
+> `private` and holds 5 skills, not 12. The mechanism this ADR settled — one manifest
+> plugin, everything else deliberately unlisted — still stands.
+
 `skills add lumirelle/skills` prints a flat list of 39 skills. The only lever over that
 display is `.claude-plugin/marketplace.json`: `plugins[].name` becomes a section heading
 in `--list` and a group in the interactive picker (kebab-cased, title-cased for display),

@@ -1,5 +1,5 @@
 # Sync Info
 
 - **Source:** `vendor/mattapocock/skills/engineering/research`
-- **Git SHA:** `49dd158d1076134a641b33efb035946536778336`
-- **Synced:** 2026-10-15
+- **Git SHA:** `5beb35b040e3de97e54fa9e386d7e42d15c295c2`
+- **Synced:** 2026-10-20

@@ -2,4 +2,4 @@
 
 - **Source:** `vendor/anthropics/skills/mcp-builder`
 - **Git SHA:** `dbd4588f9e1033efb41dad4bef2f7947c8993d44`
-- **Synced:** 2026-10-15
+- **Synced:** 2026-10-20

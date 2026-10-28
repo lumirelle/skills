@@ -10,3 +10,6 @@
 [submodule "vendor/anthropics"]
 	path = vendor/anthropics
 	url = https://github.com/anthropics/skills
+[submodule "vendor/cursor-plugins"]
+	path = vendor/cursor-plugins
+	url = https://github.com/cursor/plugins

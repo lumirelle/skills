@@ -2,6 +2,7 @@ export interface VendorSkillMeta {
   official?: boolean
   source: string
   skillsPath?: string // Optional custom path to skills directory (default: 'skills')
+  licensePath?: string // Optional license file relative to the repo root (default: the first LICENSE* found at the root)
   skills: Record<string, string> // sourceSkillName -> outputSkillName
 }
 
@@ -76,6 +77,17 @@ export const vendors: Record<string, VendorSkillMeta> = {
       'engineering/diagnosing-bugs': 'dev/diagnosing-bugs',
       'engineering/wizard': 'dev/wizard',
       'misc/migrate-to-shoehorn': 'dev/migrate-to-shoehorn',
+    },
+  },
+  'cursor-plugins': {
+    source: 'https://github.com/cursor/plugins',
+    // A plugin monorepo: skills live inside each plugin, and the license sits next to
+    // the plugin instead of at the repo root.
+    skillsPath: 'pstack/skills',
+    licensePath: 'pstack/LICENSE',
+    skills: {
+      // Document
+      unslop: 'doc/unslop',
     },
   },
   'web-design-guidelines': {

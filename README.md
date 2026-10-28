@@ -106,6 +106,12 @@ Synced from external repositories that maintain their own skills. See [`meta.ts`
 |-------|-------------|
 | [web-design-guidelines](skills/design/web-design-guidelines) | Review UI code against the Web Interface Guidelines |
 
+#### [cursor/plugins](https://github.com/cursor/plugins)
+
+| Skill | Description |
+|-------|-------------|
+| [unslop](skills/doc/unslop) | Edit AI tells out of prose with a numbered pattern list: vocabulary, punctuation, hedging, jargon |
+
 ## FAQ
 
 ### What Makes This Collection Different?

@@ -80,6 +80,7 @@ interface Project {
 interface VendorConfig {
   source: string
   skillsPath?: string // Optional custom path to skills directory (default: 'skills')
+  licensePath?: string // Optional license file relative to the repo root (default: the first LICENSE* found at the root)
   skills: Record<string, string> // sourceSkillName -> outputSkillName
 }
 
@@ -259,8 +260,11 @@ async function syncSubmodules() {
         }
       }
 
-      // Copy LICENSE file from vendor repo root if it exists
-      const licenseNames = ['LICENSE', 'LICENSE.md', 'LICENSE.txt', 'license', 'license.md', 'license.txt']
+      // Copy the LICENSE file: the configured one when a monorepo licenses its packages
+      // individually, otherwise the first one found at the vendor repo root.
+      const licenseNames = vendorConfig.licensePath
+        ? [vendorConfig.licensePath]
+        : ['LICENSE', 'LICENSE.md', 'LICENSE.txt', 'license', 'license.md', 'license.txt']
       for (const licenseName of licenseNames) {
         const licensePath = join(vendorPath, licenseName)
         if (existsSync(licensePath)) {

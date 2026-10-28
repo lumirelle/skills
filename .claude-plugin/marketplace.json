@@ -17,7 +17,8 @@
         "./skills/design/canvas-design",
         "./skills/design/theme-factory",
         "./skills/doc/doc-coauthoring",
-        "./skills/doc/internal-comms"
+        "./skills/doc/internal-comms",
+        "./skills/doc/unslop"
       ]
     }
   ]

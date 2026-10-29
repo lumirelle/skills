@@ -22,7 +22,7 @@
         "./skills/shaping/frontend-design",
         "./skills/reporting/doc-coauthoring",
         "./skills/reporting/internal-comms",
-        "./skills/toolchain/worktrunk"
+        "./skills/toolchain/agent-browser"
       ]
     },
     {
@@ -39,7 +39,8 @@
         "./skills/maintaining/handoff",
         "./skills/restraining/pr",
         "./skills/reference/grilling",
-        "./skills/toolchain/mise"
+        "./skills/toolchain/mise",
+        "./skills/toolchain/worktrunk"
       ]
     }
   ]

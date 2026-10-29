@@ -15,21 +15,13 @@
       "skills": [
         "./skills/starting/find-skills",
         "./skills/shaping/grill-me",
-        "./skills/shaping/to-questionnaire",
         "./skills/shaping/teach",
         "./skills/shaping/unslop",
-        "./skills/shaping/wait-what",
         "./skills/shaping/theme-factory",
         "./skills/shaping/canvas-design",
         "./skills/shaping/frontend-design",
-        "./skills/building/wizard",
-        "./skills/building/writing-for-agents",
-        "./skills/building/mcp-builder",
-        "./skills/building/skill-creator",
         "./skills/reporting/doc-coauthoring",
         "./skills/reporting/internal-comms",
-        "./skills/maintaining/handoff",
-        "./skills/toolchain/mise",
         "./skills/toolchain/worktrunk"
       ]
     },
@@ -38,8 +30,16 @@
       "source": "./",
       "description": "Global-local skills: skills which are meant to be installed both globally and locally.",
       "skills": [
+        "./skills/shaping/to-questionnaire",
+        "./skills/shaping/wait-what",
+        "./skills/building/wizard",
+        "./skills/building/writing-for-agents",
+        "./skills/building/mcp-builder",
+        "./skills/building/skill-creator",
+        "./skills/maintaining/handoff",
         "./skills/restraining/pr",
-        "./skills/reference/grilling"
+        "./skills/reference/grilling",
+        "./skills/toolchain/mise"
       ]
     }
   ]

@@ -88,10 +88,10 @@ Synced from external repositories that maintain their own skills. See [`meta.ts`
 | [triage](skills/maintaining/triage) | Move issues/PRs through triage roles and write agent-ready briefs |
 | [migrate-to-shoehorn](skills/maintaining/migrate-to-shoehorn) | Migrate test files from `as` assertions to `@total-typescript/shoehorn` |
 | [handoff](skills/maintaining/handoff) | Compact the current conversation into a handoff document for the next agent |
+| [pr](skills/restraining/pr) | Shape a PR body: smallest visual, before/after evidence, merge-danger call |
 | [domain-modeling](skills/reference/domain-modeling) | Sharpen the domain model: terminology, `GLOSSARY.md`, ADRs |
 | [codebase-design](skills/reference/codebase-design) | Deep-module vocabulary: interfaces, seams, testability |
 | [tdd](skills/reference/tdd) | Red → green loop, what makes a test worth keeping, anti-patterns |
-| [pr](skills/reference/pr) | Shape a PR body: smallest visual, before/after evidence, merge-danger call |
 
 #### [cursor/plugins](https://github.com/cursor/plugins)
 
@@ -109,7 +109,7 @@ Synced from external repositories that maintain their own skills. See [`meta.ts`
 
 ### The Project Source Layout?
 
-`skills/` is this repo's own source layout (`starting/`, `shaping/`, `building/`, `maintaining/`, `reference/`, `toolchain/`), which is not what the installer shows: the skills which are meant to be installed globally are declared in [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) and listed as **Global**, every other skill falls to **Other** (`General` under `--list`) and are expected to be installed per project.
+`skills/` is this repo's own source layout (`starting/`, `shaping/`, `building/`, `maintaining/`, `restraining/`, `reference/`, `toolchain/`), which is not what the installer shows: the skills which are meant to be installed globally are declared in [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) and listed as **Global**, while skills for both global & local are listed as **Glocal (Global and Local)**, every other skill falls to **Other** (`General` under `--list`) and are expected to be installed per project.
 
 ### What Makes This Collection Different?
 

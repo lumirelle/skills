@@ -64,12 +64,12 @@ export const vendors: Record<string, VendorSkillMeta> = {
       'engineering/wizard': 'building/wizard',
       'productivity/writing-for-agents': 'building/writing-for-agents',
       'productivity/handoff': 'maintaining/handoff',
+      'engineering/pr': 'restraining/pr',
       // -- REFERENE --
       'productivity/grilling': 'reference/grilling',
       'engineering/domain-modeling': 'reference/domain-modeling',
       'engineering/codebase-design': 'reference/codebase-design',
       'engineering/tdd': 'reference/tdd',
-      'engineering/pr': 'reference/pr',
     },
   },
   'cursor-plugins': {

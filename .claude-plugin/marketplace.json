@@ -29,10 +29,17 @@
         "./skills/reporting/doc-coauthoring",
         "./skills/reporting/internal-comms",
         "./skills/maintaining/handoff",
-        "./skills/reference/grilling",
-        "./skills/reference/pr",
         "./skills/toolchain/mise",
         "./skills/toolchain/worktrunk"
+      ]
+    },
+    {
+      "name": "Glocal",
+      "source": "./",
+      "description": "Global-local skills: skills which are meant to be installed both globally and locally.",
+      "skills": [
+        "./skills/restraining/pr",
+        "./skills/reference/grilling"
       ]
     }
   ]

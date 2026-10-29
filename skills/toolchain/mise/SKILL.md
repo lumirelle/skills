@@ -18,11 +18,11 @@ to run before touching anything else.
 
 ## Prefer `--help` over the docs
 
-For anything this skill doesn't cover — a flag, a subcommand, a version-specific
-behavior — run `mise <command> --help` (or `mise --help` for the command list)
-against the **installed** version. `--help` is version-exact, offline, and always
-current; searching the web can return a different release and costs a round-trip.
-Only fall back to the online docs when `--help` genuinely doesn't answer.
+Anything this skill doesn't cover — a flag, a subcommand, a version-specific behavior —
+is `mise <command> --help` against the **installed** version: version-exact, offline, and
+current, unlike a web search that may return another release. Only when that fails:
+`https://mise.jdx.dev/llms.txt` for prose, or `mise mcp` if the agent speaks MCP rather
+than skills.
 
 ## Is this a mise project?
 
@@ -59,7 +59,6 @@ Any of these means yes:
 | Run a project task / workflow | `mise run <task>` — installs missing tools, loads project env |
 | Run one command with the project's tools + env | `mise exec -- <command>` (alias `mise x`) |
 | Re-run a task on file changes | `mise watch <task>` |
-| Inspect | `mise tasks ls`, `mise config ls`, `mise ls --current`, `mise doctor` |
 | Add or change a tool version | `mise use <tool>@<version>` — **mutates config; only when asked** |
 
 `mise exec` and `mise run` work without shell activation, so prefer them in scripts,
@@ -90,13 +89,11 @@ tool version active in this project.
   reach for a second package manager for a tool mise already declares.
 - **Don't bypass tasks.** If `[tasks]` defines a task for what you need, run it instead
   of guessing the underlying command — it carries the right tools, env, and ordering.
-- **Environment variables are declared in mise config.** `[env]` holds literal values,
-  `env._.file` loads a dotenv/JSON/YAML/TOML file, `env._.path` adds `PATH` entries, and
-  `env._.source` pulls exported vars out of a bash script; mise then supplies the result to
-  `mise exec`, tasks, and activated shells. Whatever a config already declares is the
-  source of truth — don't restate those values in a shell profile or CI, or hardcode them
-  in the code. Only variables that configure mise itself (`MISE_*`) belong in the ambient
-  shell/CI environment, since mise reads them at process start.
+- **Environment variables are declared in mise config**, and config is the source of truth:
+  don't restate a declared value in a shell profile, CI, or the code. `env._.file` / `.path` /
+  `.source` load dotenv files, `PATH` entries, and exported bash vars — the syntax is
+  `mise --help`'s domain, not this skill's. Only `MISE_*`, which configures mise itself and
+  is read at process start, belongs in the ambient shell/CI environment.
 - **Keep versions pinned.** Commit `mise.toml` and `mise.lock`; change version requests
   with `mise use`, don't hand-edit the lockfile.
 - **Don't run state-changing commands reflexively.** `mise use` and `mise trust` change
@@ -119,13 +116,6 @@ tool version active in this project.
   Run `mise config ls` before assuming the base file is everything.
 - **Activation is optional.** Bare `node` / `python` etc. on `PATH` only reflect mise when
   the shell is activated or shims are installed. When unsure, go through `mise exec --`.
-
-## Going deeper
-
-- `mise <command> --help` — first stop, always.
-- `mise --help` — the full command list.
-- `https://mise.jdx.dev/llms.txt` — LLM-oriented index, only when `--help` isn't enough.
-- `mise mcp` — mise's MCP server, if the agent supports MCP instead of a skill.
 
 <!--
 Distilled from the official mise docs (mise 2026.10.0):

@@ -26,12 +26,22 @@ addressed by branch name, never by path** — `wt switch feature` puts you in th
 
 ## Prefer `--help` over the docs
 
-For anything this skill doesn't cover — a flag, the picker keybindings, the full
-status-symbol legend, config keys — run `wt <command> --help` against the
-**installed** version. `wt list --help` is 563 lines and documents every symbol
-and config key it mentions; `wt switch --help` is the whole switch manual. Only
-fall back to `https://worktrunk.dev/<topic>.md` (or `/llms.txt`) when `--help`
-genuinely doesn't answer — the site returns clean Markdown per page.
+Run `wt <command> --help` against the **installed** version — `wt list --help` is 563
+lines and `wt switch --help` is the whole switch manual. Only when that fails,
+`https://worktrunk.dev/<topic>.md` returns clean Markdown per page (`/llms.txt` lists
+them).
+
+## On Windows, `wt` is probably Windows Terminal
+
+`wt.exe` already exists there as Windows Terminal's alias, so `wt --help` prints *its*
+help and the install looks broken. Winget therefore installs worktrunk as `git-wt`:
+
+- **Check first:** if `wt --version` doesn't mention worktrunk, use `git-wt` for every
+  command in this skill (`git wt …` resolves the same binary through Git's dispatch).
+- **Then re-run shell integration** with the binary you settled on:
+  `git-wt config shell install`.
+- **To get `wt` back**, disable the alias in Settings → Apps → Advanced app settings →
+  App execution aliases → "Terminal" / "Terminal Preview".
 
 ## `wt switch` never changes your directory
 
@@ -54,16 +64,12 @@ only your shell stays behind.
 ## Bare-repo layout
 
 In a bare clone (`.git` is the repo, no home checkout) worktrees are siblings —
-`<project>/main`, `<project>/feature` — because `repo_path` is the bare directory
-itself. Four consequences:
+`<project>/main`, `<project>/feature` — because `repo_path` is the bare directory itself.
 
 - **The project root is not a worktree.** `git status` there fails with
-  `must be run in a work tree`, and file edits there write into nothing. Always
-  work from a worktree path.
-- `wt list` at the root can print `○ No worktrees` before anything is checked
-  out — that's "nothing switched yet", not "not cloned".
-- `^` marks the **default branch's** worktree, since there is no primary
-  checkout to mark.
+  `must be run in a work tree` and edits write into nothing — always work from a
+  worktree path. `wt list` at the root printing `○ No worktrees` means "nothing
+  switched yet", not "not cloned", and `^` marks the **default branch's** worktree.
 - Keep one `worktree-path` in user config (the usual recipe is
   `"{{ repo_path }}/../{{ branch | sanitize }}"`) and let `wt` report paths.
 
@@ -73,17 +79,15 @@ itself. Four consequences:
   Branch      Status   HEAD±    main↕    main…±  Remote⇅  Path  Commit  Age  Message
 @ feature-api   + ↕⇡   +54 -5   ↑4 ↓1    +234 -24  ⇡3     …     6814f02  30m  Add API tests
 ^ main             ^⇅
-+ fix-typos       _|
 ```
 
 - **Gutter**: `@` current · `^` primary/default worktree · `+` other worktree ·
   `/` branch without a worktree (`--branches`) · `|` remote only (`--remotes`).
-- **Status**: `+` staged, `!` modified, `?` untracked (they co-occur); then one of
-  `✘` merge conflicts · `↻` git operation mid-flight · `⊟` prunable · `⊞` locked ·
-  `⊘` detached.
 - **Branch state**: `_` same commit as default branch, clean · `⊂` content already
   integrated into the target (handles squash/rebase, not just ancestry). Both are
-  safe to delete and render dimmed. `wt list --help` has the rest.
+  safe to delete and render dimmed.
+
+Every other column and the status icons are `wt list --help`'s job.
 
 `wt list` renders progressively — status and divergence fill in from background
 git calls, so an empty column early on is not "no changes".
@@ -103,12 +107,11 @@ repo stops at an approval prompt unless `--yes` is passed.
 
 ## Rules of engagement
 
-- **`wt merge` is the user's merge button, not cleanup.** It squashes commits,
-  rebases, fast-forwards the target, then **deletes the worktree and branch** —
-  all locally, and it **never fetches**. Run it when asked to land/merge, not to
-  tidy up. `--no-remove` keeps the worktree; a rebase conflict is left in the
-  worktree to resolve or abort; swept changes are backed up to
-  `refs/wt-backup/<branch>`.
+- **`wt merge` is the user's merge button, not cleanup.** It squashes, rebases,
+  fast-forwards the target, then **deletes the worktree and branch** — locally, and
+  it **never fetches**. Run it when asked to land/merge, not to tidy up. A rebase
+  conflict is left in the worktree to resolve or abort; swept changes are backed up
+  to `refs/wt-backup/<branch>`.
 - **Don't reach for force flags.** `--force` (`-f`) discards uncommitted changes,
   `--force-delete` (`-D`) deletes unmerged commits. Report the refusal instead.
 - **`wt remove` deletes the branch when it's integrated** (`_`/`⊂`) — that's the
@@ -143,19 +146,17 @@ contract.
 
 ## Gotchas
 
-- **`wt merge` targets the local branch and never fetches.** Merging onto a stale
-  `main` is a real hazard; fetch first if that matters.
-- **Squash is the default.** `wt merge --no-squash` keeps individual commits;
-  `--no-commit` skips commit+squash; `--no-ff` creates a merge commit.
+- **Merge is never a fetch, and squash is the default.** Fetch first if landing on a
+  stale `main` matters. `--no-squash` keeps individual commits, `--no-commit` skips
+  commit+squash, `--no-ff` creates a merge commit, `--no-remove` keeps the worktree.
 - **`wt step` for manual control.** `wt step diff` shows everything since
   branching, `wt step squash`/`rebase`/`push`/`commit` are the merge internals,
   `wt step prune` removes all merged worktrees and branches, `wt step for-each`
   runs a command in every worktree.
-- **Diagnosing**: `wt config show` for config file locations and shell-integration
-  state; `-v` for hook/alias output; `-vv` (or `WORKTRUNK_VERBOSE=2`) writes
-  `trace.log`, `subprocess.log`, `diagnostic.md` under `.git/wt/logs/`. Hook output
-  from background runs lands in `.git/wt/logs/<branch>/`; `wt config state logs`
-  lists it.
+- **Diagnosing**: `wt config show` for config locations and shell-integration state;
+  `-v` / `-vv` (`WORKTRUNK_VERBOSE=2`) for hook output, which background runs also
+  leave in `.git/wt/logs/<branch>/` (`wt config state logs` lists it), with
+  `trace.log` + `diagnostic.md` under `.git/wt/logs/`.
 - **Worktrees share one `.git`**, so stash, refs, and remotes are shared, while
   the index, HEAD, and files are per-worktree. Ignored build output is *not*
   copied — `wt step copy-ignored` copies it, reflinking on APFS/btrfs/XFS.

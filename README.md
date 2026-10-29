@@ -37,6 +37,7 @@ Manually maintained by Lumirelle with his preferred tools, setup conventions, an
 |-------|-------------|
 | [justbump](skills/dev/justbump) | Bump every pinned version in one mechanical pass — toolchain tools and dependencies — then report per manager and hand back for confirmation |
 | [mise](skills/external-tool/mise) | Onboard into a mise project: detect it, install its tools, find and run its tasks, and prefer `--help` over docs for anything else |
+| [worktrunk](skills/external-tool/worktrunk) | Drive `wt` for Git worktrees: switch/list/merge/remove, why `wt switch` never changes an agent's directory, bare-repo layout, and which commands are the user's call |
 
 ### Skills Generated from Official Documentation
 

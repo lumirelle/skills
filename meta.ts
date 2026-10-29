@@ -105,4 +105,5 @@ export const vendors: Record<string, VendorSkillMeta> = {
 export const manual = [
   'dev/justbump',
   'external-tool/mise',
+  'external-tool/worktrunk',
 ]

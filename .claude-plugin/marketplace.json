@@ -5,20 +5,34 @@
     "url": "https://github.com/lumirelle"
   },
   "metadata": {
-    "description": "Grouping for `skills add lumirelle/skills`: skills meant to live on your machine only are listed under `private`, everything else falls to the CLI's `Other` bucket so it gets installed and configured per project."
+    "description": "Grouping for `skills add lumirelle/skills`."
   },
   "plugins": [
     {
-      "name": "private",
+      "name": "Global",
       "source": "./",
-      "description": "Private skills: install once on this machine, share with nobody. They act on the person, not on the repo you happen to be in, so they are never part of a project's shared tooling.",
+      "description": "Global skills: skills which are meant to be installed globally.",
       "skills": [
-        "./skills/agent/find-skills",
-        "./skills/design/canvas-design",
-        "./skills/design/theme-factory",
-        "./skills/doc/doc-coauthoring",
-        "./skills/doc/internal-comms",
-        "./skills/doc/unslop"
+        "./skills/starting/find-skills",
+        "./skills/shaping/grill-me",
+        "./skills/shaping/to-questionnaire",
+        "./skills/shaping/teach",
+        "./skills/shaping/unslop",
+        "./skills/shaping/wait-what",
+        "./skills/shaping/theme-factory",
+        "./skills/shaping/canvas-design",
+        "./skills/shaping/frontend-design",
+        "./skills/building/wizard",
+        "./skills/building/writing-for-agents",
+        "./skills/building/mcp-builder",
+        "./skills/building/skill-creator",
+        "./skills/reporting/doc-coauthoring",
+        "./skills/reporting/internal-comms",
+        "./skills/maintaining/handoff",
+        "./skills/reference/grilling",
+        "./skills/reference/pr",
+        "./skills/toolchain/mise",
+        "./skills/toolchain/worktrunk"
       ]
     }
   ]

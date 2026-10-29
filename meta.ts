@@ -19,82 +19,73 @@ export const vendors: Record<string, VendorSkillMeta> = {
   'find-skills': {
     source: 'https://github.com/vercel-labs/skills',
     skills: {
-      // Agent
-      'find-skills': 'agent/find-skills',
+      // -- ANYWHERE --
+      'find-skills': 'starting/find-skills',
     },
   },
   'anthropics': {
     source: 'https://github.com/anthropics/skills',
     skills: {
-      // Agent
-      'mcp-builder': 'agent/mcp-builder',
-      'skill-creator': 'agent/skill-creator',
-      // Document
-      // NOTE: docx/pptx/xlsx/pdf are intentionally excluded. Anthropic ships them under a
-      // proprietary license that forbids copying, derivative works, and redistribution to
-      // third parties, so they cannot be published in this collection.
-      'doc-coauthoring': 'doc/doc-coauthoring',
-      'internal-comms': 'doc/internal-comms',
-      // Design
-      'theme-factory': 'design/theme-factory',
-      'canvas-design': 'design/canvas-design',
-      'frontend-design': 'design/frontend-design',
+      // -- ANYWHERE --
+      'theme-factory': 'shaping/theme-factory',
+      'canvas-design': 'shaping/canvas-design',
+      'frontend-design': 'shaping/frontend-design',
+      'mcp-builder': 'building/mcp-builder',
+      'skill-creator': 'building/skill-creator',
+      'doc-coauthoring': 'reporting/doc-coauthoring',
+      'internal-comms': 'reporting/internal-comms',
     },
   },
   'mattapocock': {
     source: 'https://github.com/mattpocock/skills',
     skills: {
-      // Starup
-      'engineering/ask-matt': 'starup/ask-matt',
-      'engineering/setup-matt-pocock-skills': 'starup/setup-matt-pocock-skills',
-      // Agent
-      'productivity/writing-for-agents': 'agent/writing-for-agents',
-      'productivity/handoff': 'agent/handoff',
-      // Document
-      'engineering/research': 'doc/research',
-      'engineering/domain-modeling': 'doc/domain-modeling',
-      'productivity/grilling': 'doc/grilling',
-      'productivity/grill-me': 'doc/grill-me',
-      'engineering/grill-with-docs': 'doc/grill-with-docs',
-      'engineering/wayfinder': 'doc/wayfinder',
-      'productivity/to-questionnaire': 'doc/to-questionnaire',
-      'productivity/wait-what': 'doc/wait-what',
-      'productivity/teach': 'doc/teach',
-      'engineering/to-spec': 'doc/to-spec',
-      'engineering/to-tickets': 'doc/to-tickets',
-      'engineering/triage': 'doc/triage',
-      'engineering/pr': 'doc/pr',
-      'engineering/retro': 'doc/retro',
-      // Design
-      'engineering/codebase-design': 'design/codebase-design',
-      'engineering/prototype': 'design/prototype',
-      'engineering/improve-codebase-architecture': 'design/improve-codebase-architecture',
-      // Development
-      'engineering/tdd': 'dev/tdd',
-      'engineering/implement': 'dev/implement',
-      'engineering/implement-spec': 'dev/implement-spec',
-      'engineering/code-review': 'dev/code-review',
-      'engineering/diagnosing-bugs': 'dev/diagnosing-bugs',
-      'engineering/wizard': 'dev/wizard',
-      'misc/migrate-to-shoehorn': 'dev/migrate-to-shoehorn',
+      // -- WORKFLOW --
+      'engineering/ask-matt': 'starting/ask-matt',
+      'engineering/setup-matt-pocock-skills': 'starting/setup-matt-pocock-skills',
+      'engineering/wayfinder': 'shaping/wayfinder',
+      'engineering/prototype': 'shaping/prototype',
+      'engineering/research': 'shaping/research',
+      'engineering/grill-with-docs': 'shaping/grill-with-docs',
+      'engineering/to-spec': 'building/to-spec',
+      'engineering/to-tickets': 'building/to-tickets',
+      'engineering/implement': 'building/implement',
+      'engineering/implement-spec': 'building/implement-spec',
+      'engineering/code-review': 'building/code-review',
+      'engineering/retro': 'maintaining/retro',
+      'engineering/improve-codebase-architecture': 'maintaining/improve-codebase-architecture',
+      'engineering/diagnosing-bugs': 'maintaining/diagnosing-bugs',
+      'engineering/triage': 'maintaining/triage',
+      'misc/migrate-to-shoehorn': 'maintaining/migrate-to-shoehorn',
+      // -- ANYWHERE --
+      'productivity/grill-me': 'shaping/grill-me',
+      'productivity/to-questionnaire': 'shaping/to-questionnaire',
+      'productivity/teach': 'shaping/teach',
+      'productivity/wait-what': 'shaping/wait-what',
+      'engineering/wizard': 'building/wizard',
+      'productivity/writing-for-agents': 'building/writing-for-agents',
+      'productivity/handoff': 'maintaining/handoff',
+      // -- REFERENE --
+      'productivity/grilling': 'reference/grilling',
+      'engineering/domain-modeling': 'reference/domain-modeling',
+      'engineering/codebase-design': 'reference/codebase-design',
+      'engineering/tdd': 'reference/tdd',
+      'engineering/pr': 'reference/pr',
     },
   },
   'cursor-plugins': {
     source: 'https://github.com/cursor/plugins',
-    // A plugin monorepo: skills live inside each plugin, and the license sits next to
-    // the plugin instead of at the repo root.
     skillsPath: 'pstack/skills',
     licensePath: 'pstack/LICENSE',
     skills: {
-      // Document
-      unslop: 'doc/unslop',
+      // -- ANYWHERE --
+      unslop: 'shaping/unslop',
     },
   },
   'web-design-guidelines': {
     source: 'https://github.com/vercel-labs/agent-skills',
     skills: {
-      // Design
-      'web-design-guidelines': 'design/web-design-guidelines',
+      // -- WORKFLOW --
+      'web-design-guidelines': 'shaping/web-design-guidelines',
     },
   },
 }
@@ -103,7 +94,9 @@ export const vendors: Record<string, VendorSkillMeta> = {
  * Hand-written skills with Lumirelle's preferences/tastes/recommendations
  */
 export const manual = [
-  'dev/justbump',
-  'external-tool/mise',
-  'external-tool/worktrunk',
+  // -- WORKFLOW --
+  'maintaining/justbump',
+  // -- ANYWHERE
+  'toolchain/mise',
+  'toolchain/worktrunk',
 ]

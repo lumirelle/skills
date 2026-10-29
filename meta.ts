@@ -88,6 +88,13 @@ export const vendors: Record<string, VendorSkillMeta> = {
       'web-design-guidelines': 'shaping/web-design-guidelines',
     },
   },
+  'agent-browser': {
+    source: 'https://github.com/vercel-labs/agent-browser',
+    skills: {
+      // -- ANYWHERE --
+      'agent-browser': 'toolchain/agent-browser',
+    },
+  },
 }
 
 /**

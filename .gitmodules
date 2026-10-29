@@ -13,3 +13,6 @@
 [submodule "vendor/cursor-plugins"]
 	path = vendor/cursor-plugins
 	url = https://github.com/cursor/plugins
+[submodule "vendor/agent-browser"]
+	path = vendor/agent-browser
+	url = https://github.com/vercel-labs/agent-browser

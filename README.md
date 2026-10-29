@@ -105,6 +105,12 @@ Synced from external repositories that maintain their own skills. See [`meta.ts`
 |-------|-------------|
 | [web-design-guidelines](skills/shaping/web-design-guidelines) | Review UI code against the Web Interface Guidelines |
 
+#### [vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser)
+
+| Skill | Description |
+|-------|-------------|
+| [agent-browser](skills/toolchain/agent-browser) | Drive Chrome over CDP: accessibility snapshots, `@eN` refs, forms, screenshots, sessions, and the version-matched `skills get core` guide |
+
 ## FAQ
 
 ### The Project Source Layout?

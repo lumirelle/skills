@@ -35,7 +35,6 @@ The manifest declares two plugins.
 | `to-questionnaire` |
 | `wait-what` |
 | `wizard` |
-| `worktrunk` |
 | `writing-for-agents` |
 
 Everything else is unlisted and lands in `Other`, which is the "install it when a project

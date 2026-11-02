@@ -105,5 +105,4 @@ export const manual = [
   'maintaining/justbump',
   // -- ANYWHERE
   'toolchain/mise',
-  'toolchain/worktrunk',
 ]

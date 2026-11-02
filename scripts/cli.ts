@@ -37,7 +37,7 @@ function getGitSha(dir: string): string | null {
 // not exist, so upstream is resolved from the remote's default branch instead.
 function getUpstreamRef(dir: string): string | null {
   const symbolic = execSafe('git symbolic-ref --quiet refs/remotes/origin/HEAD', dir)
-  if (symbolic) return symbolic
+  if (symbolic !== null) return symbolic
 
   // origin/HEAD is only written at clone time; ask the remote when it is missing.
   const lsRemote = execSafe('git ls-remote --symref origin HEAD', dir)
@@ -167,7 +167,7 @@ async function initSubmodules(skipPrompt = false) {
     return
   }
 
-  for (const project of selected as Project[]) {
+  for (const project of selected) {
     spinner.start(`Adding submodule: ${project.name}`)
 
     // Ensure parent directory exists
@@ -212,7 +212,7 @@ async function syncSubmodules() {
   for (const [vendorName, config] of Object.entries(vendors)) {
     const vendorConfig = config as VendorConfig
     const vendorPath = join(root, 'vendor', vendorName)
-    const skillsBasePath = vendorConfig.skillsPath || 'skills'
+    const skillsBasePath = vendorConfig.skillsPath ?? 'skills'
     const vendorSkillsPath = join(vendorPath, skillsBasePath)
 
     if (!existsSync(vendorPath)) {
@@ -263,9 +263,10 @@ async function syncSubmodules() {
 
       // Copy the LICENSE file: the configured one when a monorepo licenses its packages
       // individually, otherwise the first one found at the vendor repo root.
-      const licenseNames = vendorConfig.licensePath
-        ? [vendorConfig.licensePath]
-        : ['LICENSE', 'LICENSE.md', 'LICENSE.txt', 'license', 'license.md', 'license.txt']
+      const licenseNames =
+        vendorConfig.licensePath !== undefined
+          ? [vendorConfig.licensePath]
+          : ['LICENSE', 'LICENSE.md', 'LICENSE.txt', 'license', 'license.md', 'license.txt']
       for (const licenseName of licenseNames) {
         const licensePath = join(vendorPath, licenseName)
         if (existsSync(licensePath)) {
@@ -312,9 +313,12 @@ function checkMarketplacePlugins(): string[] {
 
   let manifest: MarketplaceManifest
   try {
-    manifest = JSON.parse(readFileSync(MARKETPLACE_MANIFEST, 'utf-8'))
-  } catch (e: any) {
-    return [`${MARKETPLACE_MANIFEST_REL} is not valid JSON: ${e.message}`]
+    const parsed: unknown = JSON.parse(readFileSync(MARKETPLACE_MANIFEST, 'utf-8'))
+    manifest = parsed as MarketplaceManifest
+  } catch (e) {
+    return [
+      `${MARKETPLACE_MANIFEST_REL} is not valid JSON: ${e instanceof Error ? e.message : String(e)}`,
+    ]
   }
 
   const problems: string[] = []
@@ -362,13 +366,13 @@ async function checkUpdates() {
 
   const countBehind = (dir: string): number => {
     const upstream = getUpstreamRef(dir)
-    if (!upstream) {
+    if (upstream === null) {
       p.log.warn(`Could not resolve the upstream branch for ${dir}`)
       return 0
     }
 
     const behind = execSafe(`git rev-list HEAD..${upstream} --count`, dir)
-    return behind ? Number.parseInt(behind) : 0
+    return behind !== null ? Number.parseInt(behind) : 0
   }
 
   // Check sources

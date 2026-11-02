@@ -27,18 +27,18 @@ This collection aims to be a one-stop collection for agentic coding workflows. I
 
 Manually maintained by Lumirelle with his preferred tools, setup conventions, and best practices.
 
-| Skill | Description |
-|-------|-------------|
+| Skill                                   | Description                                                                                                                                  |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | [justbump](skills/maintaining/justbump) | Bump every pinned version in one mechanical pass — toolchain tools and dependencies — then report per manager and hand back for confirmation |
-| [mise](skills/toolchain/mise) | Onboard into a mise project: detect it, install its tools, find and run its tasks, and prefer `--help` over docs for anything else |
+| [mise](skills/toolchain/mise)           | Onboard into a mise project: detect it, install its tools, find and run its tasks, and prefer `--help` over docs for anything else           |
 
 ### Skills Generated from Official Documentation
 
 Generated from official documentation and fine-tuned by Lumirelle.
 
 | Skill | Description | Source |
-|-------|-------------|--------|
-| / | / |
+| ----- | ----------- | ------ |
+| /     | /           |
 
 ### Vendored Skills
 
@@ -46,68 +46,68 @@ Synced from external repositories that maintain their own skills. See [`meta.ts`
 
 #### [vercel-labs/skills](https://github.com/vercel-labs/skills)
 
-| Skill | Description |
-|-------|-------------|
+| Skill                                      | Description                                                |
+| ------------------------------------------ | ---------------------------------------------------------- |
 | [find-skills](skills/starting/find-skills) | Discover and install skills from the open skills ecosystem |
 
 #### [anthropics/skills](https://github.com/anthropics/skills)
 
-| Skill | Description |
-|-------|-------------|
-| [theme-factory](skills/shaping/theme-factory) | Apply one of 10 preset themes (or generate a new one) to slides, docs, and HTML artifacts |
-| [canvas-design](skills/shaping/canvas-design) | Create posters and static visual art as .png/.pdf from a design philosophy |
-| [frontend-design](skills/shaping/frontend-design) | Aesthetic direction, typography, and avoiding templated-looking UI |
-| [mcp-builder](skills/building/mcp-builder) | Build high-quality MCP servers that expose external APIs as tools (Python FastMCP or Node/TS SDK) |
-| [skill-creator](skills/buidling/skill-creator) | Create, edit, and improve skills; run evals and optimize descriptions for triggering |
-| [doc-coauthoring](skills/reporting/doc-coauthoring) | Structured context gathering → refinement → reader testing workflow for docs and proposals |
-| [internal-comms](skills/reporting/internal-comms) | Formats for status reports, leadership updates, newsletters, and incident reports |
+| Skill                                               | Description                                                                                       |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| [theme-factory](skills/shaping/theme-factory)       | Apply one of 10 preset themes (or generate a new one) to slides, docs, and HTML artifacts         |
+| [canvas-design](skills/shaping/canvas-design)       | Create posters and static visual art as .png/.pdf from a design philosophy                        |
+| [frontend-design](skills/shaping/frontend-design)   | Aesthetic direction, typography, and avoiding templated-looking UI                                |
+| [mcp-builder](skills/building/mcp-builder)          | Build high-quality MCP servers that expose external APIs as tools (Python FastMCP or Node/TS SDK) |
+| [skill-creator](skills/buidling/skill-creator)      | Create, edit, and improve skills; run evals and optimize descriptions for triggering              |
+| [doc-coauthoring](skills/reporting/doc-coauthoring) | Structured context gathering → refinement → reader testing workflow for docs and proposals        |
+| [internal-comms](skills/reporting/internal-comms)   | Formats for status reports, leadership updates, newsletters, and incident reports                 |
 
 #### [mattpocock/skills](https://github.com/mattpocock/skills)
 
-| Skill | Description |
-|-------|-------------|
-| [ask-matt](skills/starting/ask-matt) | Router: asks which skill or flow fits the current situation |
-| [setup-matt-pocock-skills](skills/starting/setup-matt-pocock-skills) | One-time repo setup: issue tracker, triage labels, domain doc layout |
-| [wayfinder](skills/shaping/wayfinder) | Plan work too large for one session as decision tickets on the issue tracker |
-| [prototype](skills/shaping/prototype) | Throwaway prototypes that answer a design question |
-| [research](skills/shaping/research) | Investigate a question against primary sources, captured as a Markdown file |
-| [grilling](skills/reference/grilling) / [grill-me](skills/shaping/grill-me) / [grill-with-docs](skills/shaping/grill-with-docs) | Relentless interview to stress-test a plan, optionally emitting ADRs and a glossary |
-| [to-questionnaire](skills/doc/to-questionnaire) | Turn a decision you can't answer into a questionnaire for someone else |
-| [teach](skills/shaping/teach) | Teach a new skill or concept within the workspace |
-| [wait-what](skills/shaping/wait-what) | Re-pitch the last message in Simplified Technical English |
-| [to-spec](skills/buidling/to-spec) / [to-tickets](skills/buidling/to-tickets) | Turn the conversation into a spec, then into tracer-bullet tickets with blocking edges |
-| [implement](skills/buidling/implement) | Implement work described by a spec or tickets |
-| [implement-spec](skills/buidling/implement-spec) | Implement a whole spec in one run: tickets as a task graph, parallel subagents, one integration branch |
-| [code-review](skills/buidling/code-review) | Two-axis review of a diff (standards and spec) via parallel sub-agents |
-| [wizard](skills/building/wizard) | Generate an interactive bash wizard for steps only a human can do |
-| [writing-for-agents](skills/building/writing-for-agents) | Principles for writing skills and `AGENTS.md` / `CLAUDE.md` |
-| [retro](skills/maintaining/retro) | Retrospective on a session: suggest changes to the agent's environment, not the code |
-| [improve-codebase-architecture](skills/maintaining/improve-codebase-architecture) | Scan for deepening opportunities, report as HTML, then grill the chosen one |
-| [diagnosing-bugs](skills/maintaining/diagnosing-bugs) | Diagnosis loop for hard bugs and performance regressions |
-| [triage](skills/maintaining/triage) | Move issues/PRs through triage roles and write agent-ready briefs |
-| [migrate-to-shoehorn](skills/maintaining/migrate-to-shoehorn) | Migrate test files from `as` assertions to `@total-typescript/shoehorn` |
-| [handoff](skills/maintaining/handoff) | Compact the current conversation into a handoff document for the next agent |
-| [pr](skills/restraining/pr) | Shape a PR body: smallest visual, before/after evidence, merge-danger call |
-| [domain-modeling](skills/reference/domain-modeling) | Sharpen the domain model: terminology, `GLOSSARY.md`, ADRs |
-| [codebase-design](skills/reference/codebase-design) | Deep-module vocabulary: interfaces, seams, testability |
-| [tdd](skills/reference/tdd) | Red → green loop, what makes a test worth keeping, anti-patterns |
+| Skill                                                                                                                           | Description                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| [ask-matt](skills/starting/ask-matt)                                                                                            | Router: asks which skill or flow fits the current situation                                            |
+| [setup-matt-pocock-skills](skills/starting/setup-matt-pocock-skills)                                                            | One-time repo setup: issue tracker, triage labels, domain doc layout                                   |
+| [wayfinder](skills/shaping/wayfinder)                                                                                           | Plan work too large for one session as decision tickets on the issue tracker                           |
+| [prototype](skills/shaping/prototype)                                                                                           | Throwaway prototypes that answer a design question                                                     |
+| [research](skills/shaping/research)                                                                                             | Investigate a question against primary sources, captured as a Markdown file                            |
+| [grilling](skills/reference/grilling) / [grill-me](skills/shaping/grill-me) / [grill-with-docs](skills/shaping/grill-with-docs) | Relentless interview to stress-test a plan, optionally emitting ADRs and a glossary                    |
+| [to-questionnaire](skills/doc/to-questionnaire)                                                                                 | Turn a decision you can't answer into a questionnaire for someone else                                 |
+| [teach](skills/shaping/teach)                                                                                                   | Teach a new skill or concept within the workspace                                                      |
+| [wait-what](skills/shaping/wait-what)                                                                                           | Re-pitch the last message in Simplified Technical English                                              |
+| [to-spec](skills/buidling/to-spec) / [to-tickets](skills/buidling/to-tickets)                                                   | Turn the conversation into a spec, then into tracer-bullet tickets with blocking edges                 |
+| [implement](skills/buidling/implement)                                                                                          | Implement work described by a spec or tickets                                                          |
+| [implement-spec](skills/buidling/implement-spec)                                                                                | Implement a whole spec in one run: tickets as a task graph, parallel subagents, one integration branch |
+| [code-review](skills/buidling/code-review)                                                                                      | Two-axis review of a diff (standards and spec) via parallel sub-agents                                 |
+| [wizard](skills/building/wizard)                                                                                                | Generate an interactive bash wizard for steps only a human can do                                      |
+| [writing-for-agents](skills/building/writing-for-agents)                                                                        | Principles for writing skills and `AGENTS.md` / `CLAUDE.md`                                            |
+| [retro](skills/maintaining/retro)                                                                                               | Retrospective on a session: suggest changes to the agent's environment, not the code                   |
+| [improve-codebase-architecture](skills/maintaining/improve-codebase-architecture)                                               | Scan for deepening opportunities, report as HTML, then grill the chosen one                            |
+| [diagnosing-bugs](skills/maintaining/diagnosing-bugs)                                                                           | Diagnosis loop for hard bugs and performance regressions                                               |
+| [triage](skills/maintaining/triage)                                                                                             | Move issues/PRs through triage roles and write agent-ready briefs                                      |
+| [migrate-to-shoehorn](skills/maintaining/migrate-to-shoehorn)                                                                   | Migrate test files from `as` assertions to `@total-typescript/shoehorn`                                |
+| [handoff](skills/maintaining/handoff)                                                                                           | Compact the current conversation into a handoff document for the next agent                            |
+| [pr](skills/restraining/pr)                                                                                                     | Shape a PR body: smallest visual, before/after evidence, merge-danger call                             |
+| [domain-modeling](skills/reference/domain-modeling)                                                                             | Sharpen the domain model: terminology, `GLOSSARY.md`, ADRs                                             |
+| [codebase-design](skills/reference/codebase-design)                                                                             | Deep-module vocabulary: interfaces, seams, testability                                                 |
+| [tdd](skills/reference/tdd)                                                                                                     | Red → green loop, what makes a test worth keeping, anti-patterns                                       |
 
 #### [cursor/plugins](https://github.com/cursor/plugins)
 
-| Skill | Description |
-|-------|-------------|
+| Skill                           | Description                                                                                       |
+| ------------------------------- | ------------------------------------------------------------------------------------------------- |
 | [unslop](skills/shaping/unslop) | Edit AI tells out of prose with a numbered pattern list: vocabulary, punctuation, hedging, jargon |
 
 #### [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills)
 
-| Skill | Description |
-|-------|-------------|
+| Skill                                                         | Description                                         |
+| ------------------------------------------------------------- | --------------------------------------------------- |
 | [web-design-guidelines](skills/shaping/web-design-guidelines) | Review UI code against the Web Interface Guidelines |
 
 #### [vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser)
 
-| Skill | Description |
-|-------|-------------|
+| Skill                                           | Description                                                                                                                               |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | [agent-browser](skills/toolchain/agent-browser) | Drive Chrome over CDP: accessibility snapshots, `@eN` refs, forms, screenshots, sessions, and the version-matched `skills get core` guide |
 
 ## FAQ

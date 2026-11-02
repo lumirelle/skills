@@ -9,32 +9,32 @@ The manifest declares two plugins.
 
 ## Global — meant to be installed globally
 
-| Skill |
-|-------|
-| `agent-browser` |
-| `canvas-design` |
+| Skill             |
+| ----------------- |
+| `agent-browser`   |
+| `canvas-design`   |
 | `doc-coauthoring` |
-| `find-skills` |
+| `find-skills`     |
 | `frontend-design` |
-| `grill-me` |
-| `internal-comms` |
-| `teach` |
-| `theme-factory` |
-| `unslop` |
+| `grill-me`        |
+| `internal-comms`  |
+| `teach`           |
+| `theme-factory`   |
+| `unslop`          |
 
 ## Glocal — meant to be installed globally and locally
 
-| Skill |
-|-------|
-| `grilling` |
-| `handoff` |
-| `mcp-builder` |
-| `mise` |
-| `pr` |
-| `skill-creator` |
-| `to-questionnaire` |
-| `wait-what` |
-| `wizard` |
+| Skill                |
+| -------------------- |
+| `grilling`           |
+| `handoff`            |
+| `mcp-builder`        |
+| `mise`               |
+| `pr`                 |
+| `skill-creator`      |
+| `to-questionnaire`   |
+| `wait-what`          |
+| `wizard`             |
 | `writing-for-agents` |
 
 Everything else is unlisted and lands in `Other`, which is the "install it when a project

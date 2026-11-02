@@ -29,7 +29,7 @@ degradation is reported rather than hidden.
 - **Hand-roll the range rewriting.** Re-implements semver range resolution and
   lockfile consistency, which is exactly the part that is easy to get wrong.
 - **Record `engine: taze` and expand it at run time** (the v1 schema). Keeps the
-  config small, but the file then holds a native `bump` map that does *not* run,
+  config small, but the file then holds a native `bump` map that does _not_ run,
   while the command that does run is assembled from three places — the file, a
   runner table, and taze's flag list. It made the config read untruthfully, and it
   left the "don't add taze to `package.json`" guarantee in the agent's memory
@@ -51,7 +51,7 @@ Sharpest consequence: taze is not safe to use for inspection. Its project config
 makes even `taze --json` rewrite the manifest — found by running it against a clean
 tree, not by reading the docs, which still imply `-w` is required. So `check` is
 always the native manager's job, with one verified exception: yarn berry has **no**
-non-interactive outdated listing at all (`yarn outdated` → *Couldn't find a script
-named 'outdated'*; `yarn upgrade-interactive` is interactive), so there the check is
+non-interactive outdated listing at all (`yarn outdated` → _Couldn't find a script
+named 'outdated'_; `yarn upgrade-interactive` is interactive), so there the check is
 `<runner> taze --json --no-write`. The flag is what makes that safe, and dropping it
 would silently re-introduce the write.

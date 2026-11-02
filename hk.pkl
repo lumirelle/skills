@@ -10,24 +10,26 @@ steps {
     glob =
       List(
         // Code
-        "*.js",
-        "*.mjs",
-        "*.cjs",
-        "*.jsx",
-        "*.ts",
-        "*.mts",
-        "*.cts",
-        "*.tsx",
+        "**/*.js",
+        "**/*.mjs",
+        "**/*.cjs",
+        "**/*.jsx",
+        "**/*.ts",
+        "**/*.mts",
+        "**/*.cts",
+        "**/*.tsx",
         // Configurations
         "*.json",
-        "*.jsonc",
-        "*.yaml",
-        "*.yml",
-        "*.toml",
+        "**/*.json5",
+        "**/*.jsonc",
+        "**/*.yaml",
+        "**/*.yml",
+        "**/*.toml",
         // Documentations
-        "*.md",
-        "*.mdc",
-        "*.mdx",
+        "**/*.markdown",
+        "**/*.md",
+        "**/*.mdc",
+        "**/*.mdx",
       )
     check = new CommandSpec {
       command = new Command { argv = List("eslint", "--no-warn-ignored", "{{files}}") }
@@ -40,6 +42,11 @@ steps {
       effect = "write"
     }
     depends = List("oxlint")
+  }
+  ["oxfmt"] = (Builtins.oxfmt) {
+    // Formatting runs last: ESLint's fixes are the ones that can leave a file unformatted, and no
+    // rule of this repository's config reports what Oxfmt would only reformat.
+    depends = List("eslint")
   }
 
   // Configurations

@@ -1,4 +1,3 @@
-
 MIT License
 
 Copyright (c) 2025-PRESENT Anthony Fu <https://github.com/antfu>

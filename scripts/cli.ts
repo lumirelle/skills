@@ -1,5 +1,13 @@
 import { execSync } from 'node:child_process'
-import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs'
 import { dirname, join } from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
@@ -16,8 +24,7 @@ function exec(cmd: string, cwd = root): string {
 function execSafe(cmd: string, cwd = root): string | null {
   try {
     return exec(cmd, cwd)
-  }
-  catch {
+  } catch {
     return null
   }
 }
@@ -30,8 +37,7 @@ function getGitSha(dir: string): string | null {
 // not exist, so upstream is resolved from the remote's default branch instead.
 function getUpstreamRef(dir: string): string | null {
   const symbolic = execSafe('git symbolic-ref --quiet refs/remotes/origin/HEAD', dir)
-  if (symbolic)
-    return symbolic
+  if (symbolic !== null) return symbolic
 
   // origin/HEAD is only written at clone time; ask the remote when it is missing.
   const lsRemote = execSafe('git ls-remote --symref origin HEAD', dir)
@@ -41,8 +47,7 @@ function getUpstreamRef(dir: string): string | null {
 
 function submoduleExists(path: string): boolean {
   const gitmodules = join(root, '.gitmodules')
-  if (!existsSync(gitmodules))
-    return false
+  if (!existsSync(gitmodules)) return false
   const content = readFileSync(gitmodules, 'utf-8')
   return content.includes(`path = ${path}`)
 }
@@ -51,8 +56,7 @@ const RE_SUBMODULE_PATH = /path\s*=\s*(.+)/g
 
 function getExistingSubmodulePaths(): string[] {
   const gitmodules = join(root, '.gitmodules')
-  if (!existsSync(gitmodules))
-    return []
+  if (!existsSync(gitmodules)) return []
   const content = readFileSync(gitmodules, 'utf-8')
   const matches = content.matchAll(RE_SUBMODULE_PATH)
   return Array.from(matches, match => match[1].trim())
@@ -131,8 +135,7 @@ async function initSubmodules(skipPrompt = false) {
         try {
           removeSubmodule(submodulePath)
           spinner.stop(`Removed: ${submodulePath}`)
-        }
-        catch (e: any) {
+        } catch (e: any) {
           spinner.stop(`Failed to remove ${submodulePath}: ${e}`)
         }
       }
@@ -164,7 +167,7 @@ async function initSubmodules(skipPrompt = false) {
     return
   }
 
-  for (const project of selected as Project[]) {
+  for (const project of selected) {
     spinner.start(`Adding submodule: ${project.name}`)
 
     // Ensure parent directory exists
@@ -176,8 +179,7 @@ async function initSubmodules(skipPrompt = false) {
     try {
       exec(`git submodule add ${project.url} ${project.path}`)
       spinner.stop(`Added: ${project.name}`)
-    }
-    catch (e: any) {
+    } catch (e: any) {
       spinner.stop(`Failed to add ${project.name}: ${e}`)
     }
   }
@@ -201,8 +203,7 @@ async function syncSubmodules() {
   try {
     exec('git submodule update --remote')
     spinner.stop('Submodules updated')
-  }
-  catch (e: any) {
+  } catch (e: any) {
     spinner.stop(`Failed to update submodules: ${e}`)
     return
   }
@@ -211,7 +212,7 @@ async function syncSubmodules() {
   for (const [vendorName, config] of Object.entries(vendors)) {
     const vendorConfig = config as VendorConfig
     const vendorPath = join(root, 'vendor', vendorName)
-    const skillsBasePath = vendorConfig.skillsPath || 'skills'
+    const skillsBasePath = vendorConfig.skillsPath ?? 'skills'
     const vendorSkillsPath = join(vendorPath, skillsBasePath)
 
     if (!existsSync(vendorPath)) {
@@ -262,9 +263,10 @@ async function syncSubmodules() {
 
       // Copy the LICENSE file: the configured one when a monorepo licenses its packages
       // individually, otherwise the first one found at the vendor repo root.
-      const licenseNames = vendorConfig.licensePath
-        ? [vendorConfig.licensePath]
-        : ['LICENSE', 'LICENSE.md', 'LICENSE.txt', 'license', 'license.md', 'license.txt']
+      const licenseNames =
+        vendorConfig.licensePath !== undefined
+          ? [vendorConfig.licensePath]
+          : ['LICENSE', 'LICENSE.md', 'LICENSE.txt', 'license', 'license.md', 'license.txt']
       for (const licenseName of licenseNames) {
         const licensePath = join(vendorPath, licenseName)
         if (existsSync(licensePath)) {
@@ -298,7 +300,7 @@ const MARKETPLACE_MANIFEST_REL = '.claude-plugin/marketplace.json'
 const MARKETPLACE_MANIFEST = join(root, MARKETPLACE_MANIFEST_REL)
 
 interface MarketplaceManifest {
-  plugins?: { name?: string, skills?: string[] }[]
+  plugins?: { name?: string; skills?: string[] }[]
 }
 
 // The manifest drives the installer's grouping and fails silently by design: a path that
@@ -311,10 +313,12 @@ function checkMarketplacePlugins(): string[] {
 
   let manifest: MarketplaceManifest
   try {
-    manifest = JSON.parse(readFileSync(MARKETPLACE_MANIFEST, 'utf-8'))
-  }
-  catch (e: any) {
-    return [`${MARKETPLACE_MANIFEST_REL} is not valid JSON: ${e.message}`]
+    const parsed: unknown = JSON.parse(readFileSync(MARKETPLACE_MANIFEST, 'utf-8'))
+    manifest = parsed as MarketplaceManifest
+  } catch (e) {
+    return [
+      `${MARKETPLACE_MANIFEST_REL} is not valid JSON: ${e instanceof Error ? e.message : String(e)}`,
+    ]
   }
 
   const problems: string[] = []
@@ -344,8 +348,7 @@ async function checkUpdates() {
     for (const problem of manifestProblems) {
       p.log.message(`  - ${problem}`)
     }
-  }
-  else {
+  } else {
     p.log.success('Install grouping paths all resolve')
   }
 
@@ -354,30 +357,28 @@ async function checkUpdates() {
   try {
     exec('git submodule foreach git fetch')
     spinner.stop('Fetched remote changes')
-  }
-  catch (e: any) {
+  } catch (e: any) {
     spinner.stop(`Failed to fetch: ${e}`)
     return
   }
 
-  const updates: { name: string, type: string, behind: number }[] = []
+  const updates: { name: string; type: string; behind: number }[] = []
 
   const countBehind = (dir: string): number => {
     const upstream = getUpstreamRef(dir)
-    if (!upstream) {
+    if (upstream === null) {
       p.log.warn(`Could not resolve the upstream branch for ${dir}`)
       return 0
     }
 
     const behind = execSafe(`git rev-list HEAD..${upstream} --count`, dir)
-    return behind ? Number.parseInt(behind) : 0
+    return behind !== null ? Number.parseInt(behind) : 0
   }
 
   // Check sources
   for (const name of Object.keys(submodules)) {
     const path = join(root, 'sources', name)
-    if (!existsSync(path))
-      continue
+    if (!existsSync(path)) continue
 
     const count = countBehind(path)
     if (count > 0) {
@@ -389,8 +390,7 @@ async function checkUpdates() {
   for (const [name, config] of Object.entries(vendors)) {
     const vendorConfig = config as VendorConfig
     const path = join(root, 'vendor', name)
-    if (!existsSync(path))
-      continue
+    if (!existsSync(path)) continue
 
     const count = countBehind(path)
     if (count > 0) {
@@ -401,8 +401,7 @@ async function checkUpdates() {
 
   if (updates.length === 0) {
     p.log.success('All submodules are up to date')
-  }
-  else {
+  } else {
     p.log.info('Updates available:')
     for (const update of updates) {
       p.log.message(`  ${update.name} (${update.type}): ${update.behind} commits behind`)
@@ -436,8 +435,7 @@ function getExpectedSkillNames(): Set<string> {
 
 function getExistingSkillNames(): string[] {
   const skillsDir = join(root, 'skills')
-  if (!existsSync(skillsDir))
-    return []
+  if (!existsSync(skillsDir)) return []
 
   // Skills live at skills/<category>/<skill>, so return that same shape. Listing the
   // top-level directories instead yields bare category names, which never match the
@@ -445,9 +443,11 @@ function getExistingSkillNames(): string[] {
   // removed wholesale, taking manual skills with it.
   return readdirSync(skillsDir, { withFileTypes: true })
     .filter(entry => entry.isDirectory())
-    .flatMap(category => readdirSync(join(skillsDir, category.name), { withFileTypes: true })
-      .filter(entry => entry.isDirectory())
-      .map(entry => `${category.name}/${entry.name}`))
+    .flatMap(category =>
+      readdirSync(join(skillsDir, category.name), { withFileTypes: true })
+        .filter(entry => entry.isDirectory())
+        .map(entry => `${category.name}/${entry.name}`),
+    )
 }
 
 async function cleanup(skipPrompt = false) {
@@ -499,8 +499,7 @@ async function cleanup(skipPrompt = false) {
         try {
           removeSubmodule(submodulePath)
           spinner.stop(`Removed: ${submodulePath}`)
-        }
-        catch (e: any) {
+        } catch (e: any) {
           spinner.stop(`Failed to remove ${submodulePath}: ${e}`)
         }
       }
@@ -544,8 +543,7 @@ async function cleanup(skipPrompt = false) {
         try {
           rmSync(join(root, 'skills', skillName), { recursive: true })
           spinner.stop(`Removed: skills/${skillName}`)
-        }
-        catch (e: any) {
+        } catch (e: any) {
           spinner.stop(`Failed to remove skills/${skillName}: ${e}`)
         }
       }
@@ -554,8 +552,7 @@ async function cleanup(skipPrompt = false) {
 
   if (!hasChanges && extraSubmodules.length === 0 && extraSkills.length === 0) {
     p.log.success('Everything is clean, no unused submodules or skills found')
-  }
-  else if (hasChanges) {
+  } else if (hasChanges) {
     p.log.success('Cleanup completed')
   }
 }
@@ -638,7 +635,6 @@ async function main() {
 
 try {
   await main()
-}
-catch (e: any) {
+} catch (e: any) {
   console.error(e)
 }

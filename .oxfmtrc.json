@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 100,
+  "semi": false,
+  "singleQuote": true,
+  "arrowParens": "avoid",
+  "quoteProps": "consistent",
+  "objectWrap": "preserve",
+  "experimentalOperatorPosition": "start",
+  "sortPackageJson": false,
+  "ignorePatterns": ["vendor/**", "sources/**", "skills/**", ".agents/**", ".claude/**"]
+}

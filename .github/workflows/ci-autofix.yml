@@ -13,4 +13,6 @@ jobs:
     permissions:
       contents: read
     with:
+      # Oxlint's JS-plugin allocator reserves ~6 GiB; ubuntu-slim has only ~2.5 GiB of commit.
+      primary-os: ubuntu-latest
       cache-preset: 'mise-task,nub'

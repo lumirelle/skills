@@ -16,8 +16,8 @@ So the manifest declares **one** plugin, `global`, listing the 12 skills that ar
 paying for in every session. Everything else is left unlisted on purpose: the CLI files
 unlisted skills under its hardcoded `General` heading in `--list` and under `Other` in the
 picker, which is exactly the "install it when a project needs it" bucket we want. The
-inclusion test is *no dependency on the repo you happen to be in, and no way to predict
-when you will need it*: skill meta-work (`find-skills`, `skill-creator`,
+inclusion test is _no dependency on the repo you happen to be in, and no way to predict
+when you will need it_: skill meta-work (`find-skills`, `skill-creator`,
 `writing-for-agents`), session-level operations (`handoff`, `retro`, `to-questionnaire`),
 document and visual output (`doc-coauthoring`, `internal-comms`, `research`,
 `theme-factory`, `canvas-design`), and host-level `wizard`. `wait-what` stays out because

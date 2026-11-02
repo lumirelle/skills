@@ -39,8 +39,7 @@
         "./skills/maintaining/handoff",
         "./skills/restraining/pr",
         "./skills/reference/grilling",
-        "./skills/toolchain/mise",
-        "./skills/toolchain/worktrunk"
+        "./skills/toolchain/mise"
       ]
     }
   ]

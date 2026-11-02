@@ -19,7 +19,7 @@ steps {
         "**/*.cts",
         "**/*.tsx",
         // Configurations
-        "*.json",
+        "**/*.json",
         "**/*.json5",
         "**/*.jsonc",
         "**/*.yaml",

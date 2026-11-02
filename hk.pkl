@@ -32,12 +32,31 @@ steps {
         "**/*.mdx",
       )
     check = new CommandSpec {
-      command = new Command { argv = List("eslint", "--no-warn-ignored", "{{files}}") }
+      command = new Command {
+        argv =
+          List(
+            "eslint",
+            "--no-warn-ignored",
+            "--cache",
+            "--cache-strategy",
+            "content",
+            "{{files}}",
+          )
+      }
       effect = "read"
     }
     fix = new CommandSpec {
       command = new Command {
-        argv = List("eslint", "--no-warn-ignored", "--fix", "{{files}}")
+        argv =
+          List(
+            "eslint",
+            "--no-warn-ignored",
+            "--fix",
+            "--cache",
+            "--cache-strategy",
+            "content",
+            "{{files}}",
+          )
       }
       effect = "write"
     }

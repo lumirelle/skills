@@ -10,9 +10,10 @@ permissions: {}
 
 jobs:
   ci:
-    uses: lumirelle/workflows/.github/workflows/ci.yml@v10
+    uses: lumirelle/workflows/.github/workflows/ci.yml@v11
     with:
       # Oxlint's JS-plugin allocator reserves ~6 GiB; ubuntu-slim has only ~2.5 GiB of commit.
       primary-os: ubuntu-latest
-      cache-preset: 'mise-task,nub'
+      cache-preset: nub
+      check-cache-preset: 'nub,eslint'
       test: ''

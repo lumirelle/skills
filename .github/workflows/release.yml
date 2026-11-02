@@ -8,11 +8,11 @@ permissions: {}
 
 jobs:
   release:
-    uses: lumirelle/workflows/.github/workflows/release.yml@v10
+    uses: lumirelle/workflows/.github/workflows/release.yml@v11
     permissions:
       contents: write
       id-token: write
     with:
-      cache-preset: 'mise-task,nub'
+      cache-preset: nub
       build: ''
       publish: ''

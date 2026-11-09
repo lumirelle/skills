@@ -22,7 +22,8 @@
         "./skills/shaping/frontend-design",
         "./skills/reporting/doc-coauthoring",
         "./skills/reporting/internal-comms",
-        "./skills/toolchain/agent-browser"
+        "./skills/toolchain/agent-browser",
+        "./skills/toolchain/agent-desktop"
       ]
     },
     {

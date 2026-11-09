@@ -1,5 +1,5 @@
 # Sync Info
 
 - **Source:** `vendor/mattapocock/skills/engineering/grill-with-docs`
-- **Git SHA:** `59db609eb1e18aaf59b63284d0e52255aff0c63c`
-- **Synced:** 2026-10-29
+- **Git SHA:** `4ae2317ddb22b046e26455e4f9c9b3aaaf62212d`
+- **Synced:** 2026-11-09

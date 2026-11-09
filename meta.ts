@@ -94,6 +94,13 @@ export const vendors: Record<string, VendorSkillMeta> = {
       'agent-browser': 'toolchain/agent-browser',
     },
   },
+  'agent-desktop': {
+    source: 'https://github.com/vercel-labs/agent-desktop',
+    skills: {
+      // -- ANYWHERE --
+      'agent-desktop': 'toolchain/agent-desktop',
+    },
+  },
 }
 
 /**

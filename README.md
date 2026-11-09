@@ -110,6 +110,12 @@ Synced from external repositories that maintain their own skills. See [`meta.ts`
 | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | [agent-browser](skills/toolchain/agent-browser) | Drive Chrome over CDP: accessibility snapshots, `@eN` refs, forms, screenshots, sessions, and the version-matched `skills get core` guide |
 
+#### [vercel-labs/agent-desktop](https://github.com/vercel-labs/agent-desktop)
+
+| Skill                                           | Description                                                                                                                                                       |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [agent-desktop](skills/toolchain/agent-desktop) | Operate desktop apps on macOS, Windows and Linux through native accessibility trees: snapshots, stable refs, click/type/scroll, windows, clipboard, notifications |
+
 ## FAQ
 
 ### The Project Source Layout?

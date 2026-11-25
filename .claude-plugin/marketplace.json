@@ -23,7 +23,8 @@
         "./skills/reporting/doc-coauthoring",
         "./skills/reporting/internal-comms",
         "./skills/toolchain/agent-browser",
-        "./skills/toolchain/agent-desktop"
+        "./skills/toolchain/agent-desktop",
+        "./skills/maintaining/retro"
       ]
     },
     {

@@ -45,7 +45,7 @@ The port exists only for a fresh process. `launch` never quits a running app for
 
 Handoff: agent-desktop never talks to the port itself. Check `command -v agent-browser`. If it exists, run `agent-browser connect <port>` and use its snapshot, click and type workflow (`agent-browser skills get electron` has the guide). Playwright, Puppeteer and other CDP clients also work. Do not write raw CDP by hand or call app-internal APIs. If no client exists, ask the user to run `npm install -g agent-browser`, or stay on the accessibility path.
 
-Keep these on agent-desktop even with CDP connected: the native menu bar, file dialogs and sheets, window management, notifications, screenshots, and any app you did not launch. While the port is open, any local process of the same user can control the app's web contents. Request `--cdp` only for the step that needs it. `close-app` ends the exposure.
+Keep these on agent-desktop even with CDP connected: the native menu bar, file dialogs and sheets, window management, notifications, screenshots, and any app you did not launch. While the port is open, any local process can control the app's web contents, including processes of other accounts on the same machine, because the DevTools port has no authentication. Request `--cdp` only for the step that needs it. `close-app` ends the exposure.
 
 ## close-app
 
@@ -215,6 +215,14 @@ Multi-agent cursors (macOS and Windows): start with `session start --cursor --mu
 - A headless action moves its cursor before it takes the interaction lease, so several agents' cursors travel at the same time. The actions still take turns, and commands that draw the same cursor take turns from its travel to its click effect.
 - `--agent-id <id> cursor-overlay enable` saves a style for that agent. Do not add `--multi-agent` to it.
 - `cursor-overlay disable` and `session end` stop every cursor in the session, even when you pass an agent id.
+
+## Sandboxes
+
+`agent-desktop sandbox install` lists the providers this build includes, and `agent-desktop sandbox list` lists the sandboxes with `name`, `state`, `message`, and `next`. A single sandbox command also returns its `provider`. A build can include no providers: `sandbox install` then returns an empty list, and a command that names a provider fails with `INVALID_ARGS`.
+
+A sandbox whose record is missing or malformed, or names a provider this build does not include, appears in `sandbox list` with `state: "broken"`, and every command on it returns `INVALID_ARGS`. `next` and `suggestion` name the directory to delete once nothing in it is still running. A sandbox whose status check failed is also `broken`; follow its `next`, which is not always a removal.
+
+`sandbox start <name> --window` shows the sandbox's desktop in a window on the host instead of running it headless, and `--set key=value` passes the provider an option for that start. `create`, `start`, `stop` and `rm` on one sandbox run one at a time; a second one fails with `ACTION_FAILED`. `sandbox exec` ends a guest command after 300 seconds with `TIMEOUT`. It runs the guest's `~/.local/bin/agent-desktop` through `agent-desktop-guest` with the arguments after `--`; the agent does not run a shell. The host's session and agent id, from flags or from `AGENT_DESKTOP_SESSION` and `AGENT_DESKTOP_AGENT_ID`, do not apply in the guest; pass `--session` after `--`.
 
 ## status, permissions, version
 

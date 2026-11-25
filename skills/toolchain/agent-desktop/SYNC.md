@@ -1,5 +1,5 @@
 # Sync Info
 
 - **Source:** `vendor/agent-desktop/skills/agent-desktop`
-- **Git SHA:** `b43ac4f6e892ef608f8851428613c4009f0e84c7`
-- **Synced:** 2026-11-09
+- **Git SHA:** `ce2ddf07226346818de2a1c6bae9869cfad142df`
+- **Synced:** 2026-11-25

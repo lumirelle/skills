@@ -3,22 +3,22 @@
   "type": "module",
   "version": "2.0.0",
   "private": true,
-  "packageManager": "nub@0.9.6",
+  "packageManager": "nub@0.11.2",
   "devDependencies": {
-    "@clack/prompts": "^1.8.1",
+    "@clack/prompts": "^1.9.0",
     "@lumirelle/linter-config": "^0.1.0",
     "@lumirelle/linter-plugins-eslint": "^0.1.0",
     "@lumirelle/linter-plugins-oxlint": "^0.1.0",
     "@lumirelle/tsconfig": "^0.1.6",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "bumpp": "^12.3.0",
     "changelogithub": "^15.0.5",
-    "eslint": "^10.14.0",
-    "oxfmt": "^0.75.0",
-    "oxlint": "^1.90.0",
-    "oxlint-tsgolint": "^7.0.2005",
+    "eslint": "^10.15.0",
+    "oxfmt": "^0.80.0",
+    "oxlint": "^1.95.0",
+    "oxlint-tsgolint": "^7.0.2008",
     "taze": "^21.3.0",
-    "typescript": "npm:typescript-native-bridge@^6.0.3-bridge.18.tsgo.7.0.2"
+    "typescript": "npm:typescript-native-bridge@^6.0.3-bridge.19.tsgo.7.0.2"
   },
   "overrides": {
     "typescript": "$typescript"
@@ -26,7 +26,7 @@
   "devEngines": {
     "packageManager": {
       "name": "nub",
-      "version": "^0.9.6",
+      "version": "^0.11.2",
       "onFail": "ignore"
     }
   }
